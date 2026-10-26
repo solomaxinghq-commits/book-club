@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#050816">
+<title>WORLD FIND — Живое ядро</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% 38%,#142653 0%,#080e20 43%,#03050c 100%);color:#eaf4ff;font-family:system-ui,sans-serif;overflow-x:hidden}
+header{padding:22px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #26375b}
+.logo{font-size:19px;font-weight:900;letter-spacing:3px;color:#8eeaff}.status{font-size:11px;color:#75f5c0}
+main{max-width:760px;margin:auto;padding:24px 20px 50px;text-align:center}
+h1{font-size:clamp(28px,7vw,46px);margin:12px 0 6px;letter-spacing:2px}
+.sub{color:#8da6c9;font-size:14px}
+.scene{height:300px;display:grid;place-items:center;position:relative;overflow:hidden}
+.ring{position:absolute;border:1px solid #3d80ca55;border-radius:50%;width:230px;height:230px;animation:spin 16s linear infinite}
+.ring:before,.ring:after{content:"";position:absolute;inset:20px;border:1px dashed #6be6ff66;border-radius:50%}
+.ring:after{inset:43px;border-style:solid}
+.core{width:118px;height:118px;border-radius:50%;background:radial-gradient(circle at 35% 28%,#e0ffff,#5ae7ff 12%,#2477e8 35%,#5b32c9 65%,#070c26 80%);box-shadow:0 0 25px #46cfff,0 0 70px #2c6fff88,0 0 130px #6b36ff55;animation:pulse 3s ease-in-out infinite;z-index:2}
+.orbit{position:absolute;width:265px;height:95px;border:1px solid #74dcff88;border-radius:50%;transform:rotate(-28deg);animation:spin 9s linear infinite}
+@keyframes spin{to{transform:rotate(332deg)}}@keyframes pulse{50%{transform:scale(1.09);filter:hue-rotate(22deg)}}
+.search{display:flex;gap:8px;margin:8px auto 20px;max-width:570px}
+input{min-width:0;flex:1;background:#0d1730;border:1px solid #36537b;border-radius:12px;padding:15px;color:white;font-size:15px;outline:none}
+button{background:linear-gradient(120deg,#39c9ed,#6e71ff);border:0;border-radius:12px;padding:0 19px;color:#061026;font-weight:800;font-size:14px;cursor:pointer}
+.panel{border:1px solid #293e62;background:#0b1327cc;border-radius:16px;padding:18px;text-align:left}
+.panel h2{font-size:15px;margin:0 0 12px;color:#8eeaff}
+.results{display:grid;gap:9px}
+.item{border:1px solid #233858;background:#0c1830;border-radius:10px;padding:12px;color:#d9e9ff;font-size:14px}
+.item small{display:block;color:#8299bc;margin-top:5px}
+footer{color:#61799e;font-size:12px;margin-top:22px}
+</style>
+</head>
+<body>
+<header><div class="logo">WORLD FIND</div><div class="status">● CORE ONLINE</div></header>
+<main>
+<div class="sub">ИССЛЕДУЙ. ИЩИ. ОТКРЫВАЙ.</div>
+<h1>Живое ядро</h1>
+<div class="sub">Твоя точка входа в цифровой мир</div>
+<div class="scene"><div class="ring"></div><div class="orbit"></div><div class="core"></div></div>
+<div class="search"><input id="q" placeholder="Что хочешь найти?"><button id="go">НАЙТИ ↗</button></div>
+<section class="panel"><h2>⌁ ПРОСТРАНСТВО ПОИСКА</h2><div class="results" id="results"><div class="item">✦ Идеи и открытия<small>Введи запрос, чтобы начать исследование</small></div><div class="item">◈ Цифровой мир<small>Инструменты · знания · технологии</small></div></div></section>
+<footer>WORLD FIND · DEMO v1.0 · Живое ядро</footer>
+</main>
+<script>
+const q=document.getElementById('q'),out=document.getElementById('results');
+function search(){let s=q.value.trim();if(!s){q.focus();return}out.innerHTML='';let a=document.createElement('div');a.className='item';a.textContent='⌕ Результаты для: '+s;let b=document.createElement('small');b.textContent='Это демонстрационный поиск. Нажми ниже, чтобы искать в интернете.';a.appendChild(b);out.appendChild(a);let link=document.createElement('a');link.href='https://www.google.com/search?q='+encodeURIComponent(s);link.target='_blank';link.rel='noopener';link.textContent='Открыть результаты в Google ↗';link.style.cssText='display:block;color:#8eeaff;padding:12px 2px;overflow-wrap:anywhere';out.appendChild(link)}
+document.getElementById('go').addEventListener('click',search);q.addEventListener('keydown',e=>{if(e.key==='Enter')search()});
+</script>
+</body>
+</html>
