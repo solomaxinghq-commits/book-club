@@ -1,403 +1,207 @@
-<!DOCTYPE html>
+
+<!doctype html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#070b18">
-<title>NEXORA 4.0 — Твой город. Твои возможности.</title>
-
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#060914">
+<title>WORLD FIND 4.0 — Живое ядро</title>
 <style>
-:root{
- --bg:#070b18;--panel:#101a30;--panel2:#0b1427;
- --line:#293959;--text:#f1f5ff;--muted:#9aabc9;
- --blue:#6c8cff;--cyan:#55f0e0;--purple:#9b78ff;
-}
+:root{color-scheme:dark;--bg:#060914;--panel:#101a30;--line:#273856;--cyan:#52f6ff;--purple:#a88bff;--muted:#9bacc8}
 *{box-sizing:border-box}
-html{scroll-behavior:smooth;scroll-padding-top:90px}
-body{margin:0;background:radial-gradient(ellipse at 50% 0,#18264a,var(--bg) 55%);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
+body{margin:0;background:radial-gradient(ellipse at 50% 10%,#142449,#060914 65%);color:#f4f7ff;font:15px system-ui,sans-serif;min-height:100vh}
 button,input,select,textarea{font:inherit}
-button{cursor:pointer;background:#182543;color:var(--text);border:1px solid var(--line);border-radius:12px;padding:11px 14px}
-button:hover{border-color:var(--cyan)}
-button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
-.primary{background:linear-gradient(110deg,#5578f7,#7359d9);border:0;font-weight:750}
-header{position:sticky;top:0;z-index:1000;background:#080d1bea;backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
-.top{max-width:1100px;margin:auto;padding:12px 15px;display:flex;align-items:center;justify-content:space-between;gap:10px}
-.logo{font-size:23px;font-weight:950;letter-spacing:3px;background:linear-gradient(90deg,#fff,var(--cyan),var(--blue));color:transparent;background-clip:text}
-.tag{font-size:10px;color:var(--muted);letter-spacing:1px}
-nav{max-width:1100px;margin:auto;display:flex;gap:7px;padding:0 12px 10px;overflow-x:auto}
-nav button{white-space:nowrap;padding:8px 12px;font-size:13px}
-main{max-width:1100px;margin:auto;padding:18px 14px 55px}
-section{scroll-margin-top:120px}
-.hero{text-align:center;padding:16px 0 24px}
-.planet{width:150px;height:150px;margin:0 auto 8px;position:relative;display:grid;place-items:center}
-.core{width:94px;height:94px;border-radius:50%;background:radial-gradient(circle at 30% 25%,#c3fff9,#5478ff 38%,#28246e 72%,#090e25);box-shadow:0 0 30px #537aff99,0 0 70px #55f0e033;animation:pulse 3s ease-in-out infinite}
-.orbit{position:absolute;inset:8px;border:1px solid #6c8cff99;border-radius:50%;transform:rotate(-25deg) scaleY(.43);animation:spin 8s linear infinite}
-.orbit.two{inset:-2px;border-color:#55f0e088;transform:rotate(60deg) scaleY(.43);animation-duration:11s;animation-direction:reverse}
-@keyframes spin{to{rotate:360deg}}
-@keyframes pulse{50%{transform:scale(1.06);box-shadow:0 0 45px #537affbb,0 0 90px #55f0e044}}
-h1{font-size:clamp(28px,6vw,46px);letter-spacing:-1px;margin:8px 0}
-h2{font-size:21px;margin:4px 0 14px}
-h3{margin:8px 0;font-size:17px}
-p{line-height:1.55}
-.sub{max-width:560px;margin:8px auto 16px;color:var(--muted)}
-.pill{display:inline-block;border:1px solid #34486b;border-radius:99px;padding:6px 11px;color:#b4c9ff;font-size:11px}
-.panel{background:linear-gradient(145deg,#111d35f2,#0d1529f5);border:1px solid var(--line);border-radius:18px;padding:15px;margin:14px 0}
-.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
-.muted,.meta{color:var(--muted);font-size:12px}
-.controls{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-input,select,textarea{width:100%;min-width:0;background:#080f21;color:var(--text);border:1px solid var(--line);border-radius:11px;padding:12px}
-.search{grid-column:1/-1}
-.tabs{display:flex;gap:7px;overflow-x:auto;margin-top:12px}
-.tabs button{white-space:nowrap;font-size:13px}
-.tabs .active{background:#283b68;border-color:var(--blue)}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
-.card{background:#101a30;border:1px solid var(--line);border-radius:15px;padding:14px;min-width:0;overflow-wrap:anywhere}
-.emoji{font-size:27px}
-.card p{color:var(--muted);font-size:13px}
-.price{color:var(--cyan);font-size:18px;font-weight:850;margin:10px 0}
-.actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
-.actions button{font-size:12px;padding:8px 10px}
-.empty{grid-column:1/-1;text-align:center;padding:25px;color:var(--muted)}
-#map{height:340px;border-radius:13px;overflow:hidden;background:#101a30;border:1px solid var(--line);z-index:1}
-.map-note{font-size:12px;color:var(--muted);margin:10px 0 0}
-.feature-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.feature{padding:14px;border:1px solid var(--line);border-radius:14px;background:#101a30;text-align:left;color:var(--text);min-height:100px}
-.feature strong{display:block;margin:7px 0}
-.feature small{color:var(--muted);line-height:1.4}
-form{display:grid;gap:10px}
-label{display:grid;gap:5px;font-size:13px;color:#b7c6e4}
+button{cursor:pointer;color:#f4f7ff;border:1px solid var(--line);background:#14213b;border-radius:14px;padding:12px}
+button:active{transform:scale(.97)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--cyan)}
+header{padding:22px 18px 10px;text-align:center}
+.brand{font-size:24px;font-weight:850;letter-spacing:3px;color:var(--cyan)}
+.subtitle{font-size:11px;letter-spacing:3px;color:var(--muted);margin-top:5px}
+.status{font-size:11px;color:#75ffd1;margin-top:12px}
+main{max-width:600px;margin:auto;padding:12px 16px 115px}
+.search{display:flex;gap:8px;margin:12px 0}
+input,select,textarea{width:100%;min-width:0;padding:13px;background:#0c1427;border:1px solid var(--line);border-radius:13px;color:white}
+.search input{flex:1}
+.primary{background:linear-gradient(120deg,#087d9d,#5545a9);border:0;font-weight:750}
+.world{height:220px;display:grid;place-items:center;position:relative;overflow:hidden}
+.orbit{position:absolute;width:190px;height:190px;border:1px solid #35ddeb55;border-radius:50%;animation:spin 15s linear infinite}
+.orbit:before,.orbit:after{content:"";position:absolute;border:1px solid #a88bff55;border-radius:50%;inset:22px}
+.orbit:after{inset:47px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.core{width:110px;height:110px;border-radius:50%;border:1px solid var(--cyan);background:radial-gradient(circle at 35% 30%,#65f7ff,#2752a5 48%,#100f31 75%);box-shadow:0 0 35px #42eaff66,inset 0 0 25px #fff4;z-index:1;font-size:13px;font-weight:800}
+h2{font-size:17px;margin:20px 0 12px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.muted{color:var(--muted);font-size:12px}
+.chips{display:flex;gap:7px;overflow-x:auto;padding:3px 0 12px}
+.chips button{white-space:nowrap;padding:9px 12px;font-size:12px}
+.chips button.active{border-color:var(--cyan);color:var(--cyan)}
+.results{display:grid;gap:10px}
+.item{background:linear-gradient(140deg,#121e35,#0b1223);border:1px solid var(--line);border-radius:17px;padding:15px}
+.item h3{font-size:15px;margin:0 0 7px}
+.price{font-weight:800;color:var(--cyan);margin:8px 0}
+.tag{font-size:10px;border:1px solid #3b5878;border-radius:20px;padding:4px 8px;color:#b8d8ff}
+.actions{display:flex;gap:8px;margin-top:12px}
+.actions button{flex:1;font-size:12px}
+.panel{background:#0c1427;border:1px solid var(--line);padding:15px;border-radius:16px;margin-top:12px}
+.field{margin:12px 0}
+.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:7px}
+nav{position:fixed;bottom:0;left:0;right:0;z-index:5;display:flex;justify-content:center;gap:6px;padding:10px 8px calc(10px + env(safe-area-inset-bottom));background:#080d1bed;border-top:1px solid var(--line);backdrop-filter:blur(15px)}
+nav button{flex:1;max-width:115px;padding:11px 3px;font-size:11px}
+nav button.active{border-color:var(--cyan);color:var(--cyan)}
 .hidden{display:none!important}
-.notice{padding:12px;border-radius:12px;background:#152340;color:#b8c9e9;font-size:13px}
-footer{text-align:center;color:var(--muted);font-size:12px;padding:26px 10px}
-.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#101a30;color:#f1f5ff}
-.leaflet-popup-content{line-height:1.5}
-@media(min-width:720px){
- .grid{grid-template-columns:repeat(3,minmax(0,1fr))}
- .feature-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
- .controls{grid-template-columns:2fr 1fr 1fr}
- .search{grid-column:auto}
- #map{height:430px}
-}
-@media(max-width:380px){
- .grid,.feature-grid{grid-template-columns:1fr}
- .controls{grid-template-columns:1fr}
- .search{grid-column:auto}
- .logo{font-size:20px}
-}
+footer{text-align:center;color:#687b9d;font-size:10px;padding:25px 0}
 </style>
 </head>
-
 <body>
 <header>
- <div class="top">
-  <div>
-   <div class="logo">NEXORA</div>
-   <div class="tag">ТВОЙ ГОРОД. ТВОИ ВОЗМОЖНОСТИ.</div>
-  </div>
-  <button class="primary" id="addTop">＋ Создать</button>
- </div>
- <nav aria-label="Основная навигация">
-  <button data-go="home">Главная</button>
-  <button data-go="market">Объявления</button>
-  <button data-go="cityMap">Карта</button>
-  <button data-go="opportunities">Возможности</button>
-  <button data-go="community">Сообщество</button>
-  <button data-go="orders">Мои заказы</button>
-  <button data-go="profile">Профиль</button>
- </nav>
+ <div class="brand">WORLD FIND</div>
+ <div class="subtitle">ЖИВОЕ ЯДРО · 4.0</div>
+ <div class="status">● СИСТЕМА АКТИВНА · DEMO MODE</div>
 </header>
-
 <main>
-<section class="hero" id="home">
- <div class="planet" aria-label="Анимированное ядро NEXORA">
-  <div class="orbit"></div>
-  <div class="orbit two"></div>
-  <div class="core"></div>
- </div>
- <span class="pill">● NEXORA · ЖИВОЕ ЯДРО</span>
- <h1>Твой город. Твои возможности.</h1>
- <p class="sub">Открывай места, находи услуги, товары, работу и людей рядом с собой.</p>
- <button class="primary" id="focusButton">✦ Активировать дополнительный фокус</button>
- <p class="sub" id="focusMessage" hidden></p>
-</section>
-
-<section class="panel" id="market">
- <div class="section-head">
-  <h2>Поиск возможностей</h2>
-  <span class="meta" id="count"></span>
- </div>
- <div class="controls">
-  <input class="search" id="search" placeholder="🔎 Что ты ищешь?" aria-label="Поиск">
-  <select id="city" aria-label="Город">
-   <option>Ош</option><option>Бишкек</option><option>Джалал-Абад</option>
-   <option>Каракол</option><option>Токмок</option><option>Другой город</option>
-  </select>
-  <select id="category" aria-label="Категория">
-   <option value="Все">Все категории</option>
-   <option>Товары</option><option>Услуги</option><option>Работа</option>
-   <option>Недвижимость</option><option>Другое</option>
-  </select>
- </div>
- <div class="tabs">
-  <button class="active" data-tab="all">Все объявления</button>
-  <button data-tab="mine">Мои объявления</button>
- </div>
-</section>
-
-<section class="panel hidden" id="formPanel">
- <div class="section-head"><h2 id="formTitle">Новое объявление</h2><button id="cancelForm" type="button">Закрыть ✕</button></div>
- <form id="listingForm">
-  <label>Название<input id="title" maxlength="70" required placeholder="Например, ремонт телефона"></label>
-  <label>Описание<textarea id="description" maxlength="500" rows="3" required placeholder="Расскажи подробнее"></textarea></label>
-  <div class="controls">
-   <label>Цена в сомах<input id="price" type="number" min="0" max="100000000" required placeholder="1500"></label>
-   <label>Категория<select id="formCategory"><option>Товары</option><option>Услуги</option><option>Работа</option><option>Недвижимость</option><option>Другое</option></select></label>
+ <section id="home">
+  <div class="world">
+   <div class="orbit"></div>
+   <button class="core" id="core">WORLD<br>CORE<br>✦</button>
   </div>
-  <label>Город<select id="formCity"><option>Ош</option><option>Бишкек</option><option>Джалал-Абад</option><option>Каракол</option><option>Токмок</option><option>Другой город</option></select></label>
-  <label>Контакт — необязательно<input id="contact" maxlength="100" placeholder="Телефон или Telegram"></label>
-  <button class="primary" type="submit">Сохранить объявление</button>
- </form>
-</section>
+  <div class="muted" style="text-align:center">ONE PLANET · MANY POSSIBILITIES</div>
+  <div class="search">
+   <input id="query" placeholder="Что ищем в мире?" autocomplete="off">
+   <button class="primary" id="searchBtn">Найти</button>
+  </div>
+  <div class="row">
+   <span class="muted">Текущий город</span>
+   <select id="city" style="width:auto;max-width:150px">
+    <option>Ош</option><option>Бишкек</option><option>Джалал-Абад</option><option>Каракол</option><option>Нарын</option><option>Талас</option><option>Баткен</option>
+   </select>
+  </div>
+  <div class="chips" id="categories">
+   <button class="active" data-cat="Все">Все</button>
+   <button data-cat="Товары">Товары</button>
+   <button data-cat="Услуги">Услуги</button>
+   <button data-cat="Работа">Работа</button>
+   <button data-cat="Аренда">Аренда</button>
+  </div>
+  <div class="row"><h2>Рядом с тобой</h2><span class="muted" id="count"></span></div>
+  <div class="results" id="results"></div>
+ </section>
 
-<section class="panel">
- <div class="section-head"><h2>Объявления</h2><button id="addInline">＋ Добавить</button></div>
- <div class="grid" id="listings"></div>
-</section>
+ <section id="explore" class="hidden">
+  <h2>Исследовать мир</h2>
+  <p class="muted">Выбери направление и найди доступные предложения.</p>
+  <div class="results">
+   <button data-go-cat="Товары">◇ Товары и покупки</button>
+   <button data-go-cat="Услуги">⌘ Услуги и специалисты</button>
+   <button data-go-cat="Работа">✦ Работа и задания</button>
+   <button data-go-cat="Аренда">⌂ Аренда и жильё</button>
+  </div>
+  <div class="panel"><b>Карта мира</b><p class="muted">В этой демоверсии доступен выбор города. Для настоящей карты и геолокации потребуется подключить картографический сервис.</p></div>
+ </section>
 
-<section class="panel" id="cityMap">
- <div class="section-head">
-  <div><h2>Карта возможностей</h2><p class="muted">Исследуй город и демонстрационные точки.</p></div>
-  <button id="centerMap">◎ Мой город</button>
- </div>
- <div id="map" role="application" aria-label="Интерактивная карта города"></div>
- <p class="map-note">Карта использует OpenStreetMap. Точки являются демонстрационными и не подтверждают существование реальных объявлений или организаций.</p>
- <div class="actions">
-  <button data-city="Ош">Ош</button><button data-city="Бишкек">Бишкек</button>
-  <button data-city="Джалал-Абад">Джалал-Абад</button><button data-city="Каракол">Каракол</button>
- </div>
-</section>
+ <section id="publish" class="hidden">
+  <h2>Разместить предложение</h2>
+  <p class="muted">Добавь демонстрационное объявление в каталог этого браузера.</p>
+  <form id="publishForm" class="panel">
+   <div class="field"><label for="newTitle">Что предлагаешь?</label><input id="newTitle" required maxlength="80" placeholder="Например, ремонт телефона"></div>
+   <div class="field"><label for="newCat">Категория</label><select id="newCat"><option>Товары</option><option>Услуги</option><option>Работа</option><option>Аренда</option></select></div>
+   <div class="field"><label for="newPrice">Цена в сомах</label><input id="newPrice" type="number" min="0" max="100000000" required placeholder="500"></div>
+   <div class="field"><label for="newDesc">Описание</label><textarea id="newDesc" maxlength="300" placeholder="Подробности, условия, наличие"></textarea></div>
+   <button class="primary" type="submit" style="width:100%">＋ Добавить объявление</button>
+  </form>
+  <p class="muted">Важно: объявления пока хранятся только в памяти открытой страницы и не видны другим людям.</p>
+ </section>
 
-<section class="panel" id="opportunities">
- <h2>Возможности города</h2>
- <div class="feature-grid">
-  <button class="feature" data-category="Товары"><span>🛍️</span><strong>Товары</strong><small>Поиск и продажа вещей</small></button>
-  <button class="feature" data-category="Услуги"><span>🛠️</span><strong>Услуги</strong><small>Мастера и помощь</small></button>
-  <button class="feature" data-category="Работа"><span>💼</span><strong>Работа и задания</strong><small>Вакансии и подработки</small></button>
-  <button class="feature" data-go="cityMap"><span>🗺️</span><strong>Места на карте</strong><small>Исследуй свой город</small></button>
-  <button class="feature" data-go="community"><span>🌐</span><strong>Сообщество</strong><small>Местные инициативы</small></button>
-  <button class="feature" data-go="orders"><span>📋</span><strong>Заказы</strong><small>Твой список сохранённых заказов</small></button>
-  <button class="feature" data-go="profile"><span>👤</span><strong>Профиль</strong><small>Настройки демоверсии</small></button>
-  <button class="feature" data-go="market"><span>✨</span><strong>Открыть поиск</strong><small>Все объявления в одном месте</small></button>
- </div>
-</section>
-
-<section class="panel" id="community">
- <h2>Сообщество</h2>
- <div class="notice">Здесь будет пространство городских новостей, предложений и инициатив. Публикации сообщества пока не синхронизируются между пользователями.</div>
- <div class="actions"><button class="primary" id="communityButton">Предложить идею</button></div>
-</section>
-
-<section class="panel" id="orders">
- <h2>Мои заказы</h2>
- <div id="ordersContent" class="notice">Пока заказов нет. В этой демоверсии нет настоящей оплаты и оформления заказов.</div>
-</section>
-
-<section class="panel" id="profile">
- <h2>Профиль и настройки</h2>
- <p class="muted">Локальный профиль демоверсии — без регистрации и пароля.</p>
- <label>Как к тебе обращаться<input id="profileName" maxlength="50" placeholder="Имя или псевдоним"></label>
- <div class="actions"><button class="primary" id="saveProfile">Сохранить имя</button><button id="clearMine">Удалить все мои объявления</button></div>
- <p class="meta" id="profileStatus"></p>
-</section>
-
-<footer>
- NEXORA 4.0 · Демонстрационная версия<br>
- Данные хранятся локально в браузере на этом устройстве. Очистка данных браузера может удалить их.<br>
- Примеры и точки на карте не являются подтверждёнными предложениями.
-</footer>
+ <section id="profile" class="hidden">
+  <h2>Мой профиль</h2>
+  <div class="panel">
+   <div style="font-size:40px">◉</div>
+   <h3>Гость WORLD FIND</h3>
+   <p class="muted">Демонстрационный профиль</p>
+   <div class="row"><span>Выбранный город</span><b id="profileCity">Ош</b></div>
+   <div class="row" style="margin-top:12px"><span>Мои объявления в этой сессии</span><b id="myCount">0</b></div>
+  </div>
+  <div class="panel"><b>Следующий этап</b><p class="muted">Регистрация, общая база объявлений, сообщения и реальные заказы подключаются через сервер.</p></div>
+ </section>
+ <footer>WORLD FIND 4.0 · ПРОТОТИП</footer>
 </main>
-
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<nav>
+ <button class="active" data-page="home">⌂ Главная</button>
+ <button data-page="explore">◎ Исследовать</button>
+ <button data-page="publish">＋ Разместить</button>
+ <button data-page="profile">◉ Профиль</button>
+</nav>
 <script>
 (function(){
 "use strict";
-const $=id=>document.getElementById(id);
-const STORE="nexora-v4-listings";
-const PROFILE="nexora-v4-profile";
-let tab="all",editingId=null,map=null,markers=null;
-
-const cities={
- "Ош":[40.514,72.816],
- "Бишкек":[42.8746,74.5698],
- "Джалал-Абад":[40.933,73.0],
- "Каракол":[42.49,78.39],
- "Токмок":[42.84,75.29],
- "Другой город":[42.8746,74.5698]
-};
-
-const demos=[
- {id:"demo-fruit",title:"Свежие фрукты",description:"Демонстрационный пример товара.",price:120,category:"Товары",city:"Ош",demo:true,lat:40.514,lon:72.816},
- {id:"demo-repair",title:"Ремонт смартфонов",description:"Демонстрационный пример услуги.",price:500,category:"Услуги",city:"Ош",demo:true,lat:40.52,lon:72.82},
- {id:"demo-lamp",title:"Настольная лампа",description:"Демонстрационный пример товара.",price:900,category:"Товары",city:"Бишкек",demo:true,lat:42.8746,lon:74.5698},
- {id:"demo-web",title:"Помощь с сайтами",description:"Демонстрационный пример цифровой услуги.",price:1500,category:"Услуги",city:"Бишкек",demo:true,lat:42.88,lon:74.58},
- {id:"demo-job",title:"Помощник в магазине",description:"Демонстрационный пример задания.",price:1000,category:"Работа",city:"Ош",demo:true,lat:40.51,lon:72.81},
- {id:"demo-bag",title:"Сумка на каждый день",description:"Демонстрационный пример товара.",price:750,category:"Товары",city:"Каракол",demo:true,lat:42.49,lon:78.39}
+const initial=[
+ {title:"Бананы",cat:"Товары",price:120,unit:"сом/кг",city:"Ош",desc:"Демонстрационное предложение"},
+ {title:"Домашние яблоки",cat:"Товары",price:90,unit:"сом/кг",city:"Ош",desc:"Демонстрационное предложение"},
+ {title:"Ремонт телефона",cat:"Услуги",price:500,unit:"сом",city:"Ош",desc:"Диагностика и ремонт"},
+ {title:"Настольная лампа",cat:"Товары",price:1200,unit:"сом",city:"Бишкек",desc:"Демонстрационное предложение"},
+ {title:"Сумка",cat:"Товары",price:850,unit:"сом",city:"Бишкек",desc:"Демонстрационное предложение"},
+ {title:"Помощник на день",cat:"Работа",price:1500,unit:"сом/день",city:"Ош",desc:"Пример задания"},
+ {title:"Комната в аренду",cat:"Аренда",price:8000,unit:"сом/месяц",city:"Ош",desc:"Пример объявления"}
 ];
-
-function loadMine(){
- try{
-  const v=JSON.parse(localStorage.getItem(STORE)||"[]");
-  return Array.isArray(v)?v.filter(x=>x&&typeof x.id==="string"&&x.owner===true):[];
- }catch(e){return [];}
-}
-let mine=loadMine();
-
-function saveMine(){
- try{localStorage.setItem(STORE,JSON.stringify(mine));return true;}
- catch(e){alert("Не удалось сохранить данные в браузере.");return false;}
-}
-function escapeHTML(s){
- return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-}
-function emoji(cat){
- return {"Товары":"📦","Услуги":"🛠️","Работа":"💼","Недвижимость":"🏠","Другое":"✨"}[cat]||"📌";
-}
-function allItems(){return [...mine,...demos];}
-
+let items=initial.map(x=>({...x}));
+let category="Все",page="home",myItems=0;
+const $=id=>document.getElementById(id);
+function safe(text){return String(text).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 function render(){
- const q=$("search").value.trim().toLowerCase();
- const cat=$("category").value,city=$("city").value;
- const items=(tab==="mine"?mine:allItems()).filter(x=>
-  (tab==="mine"||(x.city===city))&&
-  (cat==="Все"||x.category===cat)&&
-  (!q||(x.title+" "+x.description+" "+x.category+" "+x.city).toLowerCase().includes(q))
- );
- $("count").textContent=items.length+" шт.";
- const root=$("listings");root.innerHTML="";
- if(!items.length){
-  root.innerHTML='<div class="empty">Ничего не найдено. Измени поиск или создай объявление.</div>';
-  renderMarkers();return;
- }
- items.forEach(x=>{
-  const card=document.createElement("article");card.className="card";
-  card.innerHTML='<div class="emoji">'+emoji(x.category)+'</div>'+
-   '<div class="meta">'+escapeHTML(x.category)+' · '+escapeHTML(x.city)+(x.demo?' · ДЕМО':'')+'</div>'+
-   '<h3>'+escapeHTML(x.title)+'</h3><p>'+escapeHTML(x.description)+'</p>'+
-   '<div class="price">'+Number(x.price).toLocaleString("ru-RU")+' сом</div>'+
-   (x.contact?'<div class="meta">Контакт: '+escapeHTML(x.contact)+'</div>':'')+
-   (x.owner?'<div class="actions"><button data-edit="'+escapeHTML(x.id)+'">✏️ Изменить</button><button data-delete="'+escapeHTML(x.id)+'">🗑️ Удалить</button></div>':'');
-  root.appendChild(card);
- });
- renderMarkers();
+ const q=$("query").value.trim().toLocaleLowerCase("ru");
+ const city=$("city").value;
+ const found=items.filter(x=>(category==="Все"||x.cat===category)&&(x.city===city)&&(!q||(x.title+" "+x.desc+" "+x.cat).toLocaleLowerCase("ru").includes(q)));
+ $("count").textContent=found.length+" предлож.";
+ $("profileCity").textContent=city;
+ $("myCount").textContent=myItems;
+ $("results").innerHTML=found.length?found.map((x,i)=>`<article class="item"><div class="row"><span class="tag">${safe(x.cat)}</span><span class="muted">${safe(x.city)}</span></div><h3 style="margin-top:12px">${safe(x.title)}</h3><div class="price">${Number(x.price).toLocaleString("ru-RU")} ${safe(x.unit||"сом")}</div><div class="muted">${safe(x.desc||"Без описания")}</div><div class="actions"><button data-detail="${i}">Подробнее</button><button data-contact="${i}">Связаться</button></div></article>`).join(""):'<div class="panel">Ничего не найдено в этом городе. Попробуй изменить запрос или выбрать другой город.</div>';
 }
-
-function openForm(item){
- editingId=item?item.id:null;
- $("formTitle").textContent=item?"Редактировать объявление":"Новое объявление";
- $("title").value=item?item.title:"";
- $("description").value=item?item.description:"";
- $("price").value=item?item.price:"";
- $("formCategory").value=item?item.category:"Товары";
- $("formCity").value=item?item.city:$("city").value;
- $("contact").value=item?item.contact||"":"";
- $("formPanel").classList.remove("hidden");
- $("formPanel").scrollIntoView({behavior:"smooth"});
+function go(next){
+ page=next;
+ document.querySelectorAll("main section").forEach(s=>s.classList.toggle("hidden",s.id!==next));
+ document.querySelectorAll("nav [data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===next));
+ window.scrollTo({top:0,behavior:"smooth"});
 }
-function closeForm(){
- $("formPanel").classList.add("hidden");
- $("listingForm").reset();editingId=null;
-}
-function go(id){
- const el=$(id);if(el)el.scrollIntoView({behavior:"smooth",block:"start"});
-}
-$("addTop").onclick=()=>openForm(null);
-$("addInline").onclick=()=>openForm(null);
-$("cancelForm").onclick=closeForm;
-$("search").addEventListener("input",render);
-$("category").addEventListener("change",render);
-$("city").addEventListener("change",()=>{
- if(!$("formPanel").classList.contains("hidden"))$("formCity").value=$("city").value;
- render();moveMapToCity($("city").value);
-});
-document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{
- tab=b.dataset.tab;
- document.querySelectorAll("[data-tab]").forEach(t=>t.classList.toggle("active",t===b));
+$("searchBtn").addEventListener("click",()=>{go("home");render();});
+$("query").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();go("home");render();}});
+$("query").addEventListener("input",render);
+$("city").addEventListener("change",render);
+$("core").addEventListener("click",()=>go(page==="explore"?"home":"explore"));
+document.querySelectorAll("nav [data-page]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.page)));
+document.querySelectorAll("#categories [data-cat]").forEach(b=>b.addEventListener("click",()=>{
+ category=b.dataset.cat;
+ document.querySelectorAll("#categories [data-cat]").forEach(x=>x.classList.toggle("active",x===b));
  render();
-});
-document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.go)));
-document.querySelectorAll("[data-category]").forEach(b=>b.addEventListener("click",()=>{
- $("category").value=b.dataset.category;tab="all";
- document.querySelectorAll("[data-tab]").forEach(t=>t.classList.toggle("active",t.dataset.tab==="all"));
- render();go("market");
 }));
-$("listings").addEventListener("click",e=>{
- const edit=e.target.closest("[data-edit]"),del=e.target.closest("[data-delete]");
- if(edit){const x=mine.find(a=>a.id===edit.dataset.edit);if(x)openForm(x);}
- if(del){
-  const x=mine.find(a=>a.id===del.dataset.delete);
-  if(x&&confirm('Удалить объявление "'+x.title+'"?')){
-   const old=mine;mine=mine.filter(a=>a.id!==x.id);
-   if(saveMine())render();else mine=old;
-  }
+document.querySelectorAll("[data-go-cat]").forEach(b=>b.addEventListener("click",()=>{
+ category=b.dataset.goCat;
+ document.querySelectorAll("#categories [data-cat]").forEach(x=>x.classList.toggle("active",x.dataset.cat===category));
+ go("home");render();
+}));
+$("results").addEventListener("click",e=>{
+ const detail=e.target.closest("[data-detail]");
+ const contact=e.target.closest("[data-contact]");
+ if(detail){
+  const city=$("city").value,q=$("query").value.trim().toLocaleLowerCase("ru");
+  const found=items.filter(x=>(category==="Все"||x.cat===category)&&x.city===city&&(!q||(x.title+" "+x.desc+" "+x.cat).toLocaleLowerCase("ru").includes(q)));
+  const x=found[Number(detail.dataset.detail)];
+  if(x) alert(x.title+"\n"+x.price+" "+(x.unit||"сом")+"\nГород: "+x.city+"\n"+x.desc);
  }
+ if(contact) alert("Это демонстрация. Связь с продавцом пока не подключена.");
 });
-$("listingForm").addEventListener("submit",e=>{
+$("publishForm").addEventListener("submit",e=>{
  e.preventDefault();
- const title=$("title").value.trim(),description=$("description").value.trim();
- const price=Number($("price").value);
- if(!title||!description||!Number.isFinite(price)||price<0){alert("Проверь название, описание и цену.");return;}
- const old=mine;
- if(editingId){
-  mine=mine.map(x=>x.id===editingId?{...x,title,description,price,category:$("formCategory").value,city:$("formCity").value,contact:$("contact").value.trim()}:x);
- }else{
-  mine.unshift({id:"n-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,8),title,description,price,category:$("formCategory").value,city:$("formCity").value,contact:$("contact").value.trim(),owner:true,createdAt:new Date().toISOString()});
- }
- if(saveMine()){
-  closeForm();tab="mine";$("search").value="";$("category").value="Все";
-  document.querySelectorAll("[data-tab]").forEach(t=>t.classList.toggle("active",t.dataset.tab==="mine"));
-  render();go("market");
- }else{mine=old;}
+ const title=$("newTitle").value.trim(),price=Number($("newPrice").value);
+ if(!title||!Number.isFinite(price)||price<0){alert("Проверь название и цену.");return;}
+ items.unshift({title,cat:$("newCat").value,price,unit:"сом",city:$("city").value,desc:$("newDesc").value.trim()||"Новое демонстрационное объявление"});
+ myItems++;
+ $("publishForm").reset();
+ category="Все";
+ document.querySelectorAll("#categories [data-cat]").forEach(x=>x.classList.toggle("active",x.dataset.cat==="Все"));
+ go("home");render();
+ alert("Объявление добавлено в демоверсию этого браузера.");
 });
-
-$("focusButton").addEventListener("click",()=>{
- $("focusMessage").textContent="Фокус активирован: выбери город, исследуй карту и найди нужные возможности.";
- $("focusMessage").hidden=false;
- $("focusButton").textContent="✦ Фокус активен";
- go("cityMap");
- setTimeout(()=>{if(map)map.invalidateSize();},350);
-});
-
-function initMap(){
- if(!window.L){
-  $("map").innerHTML='<div style="padding:20px;color:#b8c9e9">Не удалось загрузить карту. Проверь подключение к интернету и обнови страницу.</div>';
-  return;
- }
- map=L.map("map").setView(cities[$("city").value]||cities["Ош"],12);
- L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
-  maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
- }).addTo(map);
- markers=L.layerGroup().addTo(map);
- renderMarkers();
-}
-function renderMarkers(){
- if(!map||!markers)return;
- markers.clearLayers();
- allItems().forEach(x=>{
-  if(x.city!==$("city").value)return;
-  const lat=Number(x.lat)||cities[x.city][0]+(Math.random()-.5)*.01;
-  const lon=Number(x.lon)||cities[x.city][1]+(Math.random()-.5)*.01;
-  L.marker([lat,lon]).addTo(markers).bindPopup(
-   "<strong>"+escapeHTML(x.title)+"</strong><br>"+escapeHTML(x.category)+"<br>"+Number(x.price).toLocaleString("ru-RU")+" сом"+
-   (x.demo?"<br><small>Демонстрационный пример</small>":"")
-  );
- });
-}
-function moveMapToCity(city){
- if(!map)return;
- map.setView(cities[city]||cities["Ош"],12);
- renderMarkers();
-}
-$("centerMap").onclick=()=>{moveMapToCity($("city").value);go("cityMap");};
-docu
+render();
+})();
+</script>
+</body>
+</html>
