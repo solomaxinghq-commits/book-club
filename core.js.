@@ -1,1 +1,319 @@
+/* ==========================================================
+   WORLD FIND — CORE ARCHITECTURE
+   Permanent foundation for a modular global platform.
+   Version: 1.0.0
+   ========================================================== */
 
+(function () {
+  "use strict";
+
+  if (window.WORLD_FIND) {
+    console.warn("WORLD FIND Core is already initialized.");
+    return;
+  }
+
+  const CONFIG = Object.freeze({
+    name: "WORLD FIND",
+    title: "Живое ядро",
+    version: "1.0.0",
+    mode: "DEMO",
+    defaultCity: "Ош",
+    defaultRoute: "/home"
+  });
+
+  /* ----------------------------------------------------------
+     1. PERMANENT SECTION REGISTRY
+     Section IDs and routes must remain stable.
+     Internal implementations can be replaced independently.
+     ---------------------------------------------------------- */
+
+  const SECTIONS = Object.freeze([
+    { id: "home",       name: "Главная",       route: "/home" },
+    { id: "map",        name: "Карта мира",     route: "/map" },
+    { id: "market",     name: "Товары и магазины", route: "/market" },
+    { id: "services",   name: "Услуги",         route: "/services" },
+    { id: "work",       name: "Работа и задания", route: "/work" },
+    { id: "delivery",   name: "Доставка",       route: "/delivery" },
+    { id: "learn",      name: "Обучение",       route: "/learn" },
+    { id: "business",   name: "Бизнес",         route: "/business" },
+    { id: "community",  name: "Сообщество",     route: "/community" },
+    { id: "ai",         name: "AI Core",        route: "/ai" },
+    { id: "messages",   name: "Сообщения",      route: "/messages" },
+    { id: "profile",    name: "Профиль",        route: "/profile" },
+    { id: "system",     name: "Система",        route: "/system" }
+  ]);
+
+  /* ----------------------------------------------------------
+     2. INTERNAL REGISTRIES
+     ---------------------------------------------------------- */
+
+  const modules = new Map();
+  const routes = new Map();
+  const listeners = new Map();
+
+  let currentRoute = CONFIG.defaultRoute;
+
+  /* ----------------------------------------------------------
+     3. EVENT SYSTEM
+     Modules communicate without depending on each other's code.
+     ---------------------------------------------------------- */
+
+  const events = {
+    on(eventName, callback) {
+      if (typeof callback !== "function") return () => {};
+
+      if (!listeners.has(eventName)) {
+        listeners.set(eventName, new Set());
+      }
+
+      listeners.get(eventName).add(callback);
+
+      return () => {
+        listeners.get(eventName)?.delete(callback);
+      };
+    },
+
+    emit(eventName, data) {
+      const callbacks = listeners.get(eventName);
+
+      if (!callbacks) return;
+
+      callbacks.forEach(callback => {
+        try {
+          callback(data);
+        } catch (error) {
+          console.error(
+            "WORLD FIND event error:",
+            eventName,
+            error
+          );
+        }
+      });
+    }
+  };
+
+  /* ----------------------------------------------------------
+     4. MODULE SYSTEM
+     Every major section can be upgraded independently.
+     ---------------------------------------------------------- */
+
+  const moduleSystem = {
+    register(id, moduleDefinition) {
+      if (!id || !moduleDefinition) {
+        throw new Error("Module ID and definition are required.");
+      }
+
+      if (modules.has(id)) {
+        console.warn("Replacing module:", id);
+      }
+
+      modules.set(id, {
+        id,
+        version: moduleDefinition.version || "1.0.0",
+        init: moduleDefinition.init || function () {},
+        destroy: moduleDefinition.destroy || function () {},
+        render: moduleDefinition.render || function () {
+          return "";
+        }
+      });
+
+      events.emit("module:registered", { id });
+
+      return true;
+    },
+
+    get(id) {
+      return modules.get(id) || null;
+    },
+
+    list() {
+      return Array.from(modules.keys());
+    },
+
+    remove(id) {
+      const module = modules.get(id);
+
+      if (!module) return false;
+
+      try {
+        module.destroy();
+      } catch (error) {
+        console.error("Module cleanup error:", id, error);
+      }
+
+      modules.delete(id);
+      events.emit("module:removed", { id });
+
+      return true;
+    }
+  };
+
+  /* ----------------------------------------------------------
+     5. ROUTE SYSTEM
+     Page addresses remain stable while page designs evolve.
+     ---------------------------------------------------------- */
+
+  const router = {
+    register(path, handler) {
+      if (!path || typeof handler !== "function") {
+        throw new Error("A route path and handler are required.");
+      }
+
+      routes.set(path, handler);
+      return true;
+    },
+
+    navigate(path) {
+      if (typeof path !== "string" || !path.startsWith("/")) {
+        console.warn("Invalid WORLD FIND route:", path);
+        return false;
+      }
+
+      currentRoute = path;
+
+      window.location.hash = path;
+
+      events.emit("navigation:change", {
+        route: currentRoute
+      });
+
+      this.render();
+
+      return true;
+    },
+
+    getCurrent() {
+      return currentRoute;
+    },
+
+    render() {
+      const outlet = document.querySelector("[data-wf-outlet]");
+
+      if (!outlet) return;
+
+      const handler = routes.get(currentRoute);
+
+      if (!handler) {
+        outlet.innerHTML = `
+          <section class="wf-page-placeholder">
+            <h2>Раздел готовится</h2>
+            <p>Адрес раздела уже зарезервирован.</p>
+            <p>${currentRoute}</p>
+          </section>
+        `;
+        return;
+      }
+
+      try {
+        handler(outlet);
+      } catch (error) {
+        console.error("Page rendering error:", error);
+
+        outlet.textContent =
+          "Не удалось открыть этот раздел.";
+      }
+    }
+  };
+
+  /* ----------------------------------------------------------
+     6. PERMANENT SECTION ROUTES
+     Every section receives a reserved address.
+     ---------------------------------------------------------- */
+
+  SECTIONS.forEach(section => {
+    router.register(section.route, outlet => {
+      const module = modules.get(section.id);
+
+      if (module) {
+        const result = module.render();
+
+        outlet.innerHTML =
+          typeof result === "string" ? result : "";
+        return;
+      }
+
+      outlet.innerHTML = `
+        <section class="wf-section-placeholder">
+          <p class="wf-section-label">WORLD FIND</p>
+          <h2>${section.name}</h2>
+          <p>Раздел подключён к архитектуре.</p>
+          <p>Модуль: ${section.id}</p>
+          <p>Статус: ожидает разработки</p>
+        </section>
+      `;
+    });
+  });
+
+  /* ----------------------------------------------------------
+     7. PLATFORM INFORMATION
+     ---------------------------------------------------------- */
+
+  const platform = {
+    config: CONFIG,
+
+    sections: SECTIONS,
+
+    events,
+
+    modules: moduleSystem,
+
+    router,
+
+    getStatus() {
+      return {
+        name: CONFIG.name,
+        version: CONFIG.version,
+        currentRoute,
+        registeredModules: moduleSystem.list(),
+        permanentSections: SECTIONS.length,
+        registeredRoutes: routes.size
+      };
+    }
+  };
+
+  /* ----------------------------------------------------------
+     8. PUBLIC API
+     Other files will connect through this object.
+     ---------------------------------------------------------- */
+
+  window.WORLD_FIND = platform;
+
+  /* ----------------------------------------------------------
+     9. INITIALIZATION
+     ---------------------------------------------------------- */
+
+  function initialize() {
+    const hashRoute = window.location.hash.replace(/^#/, "");
+
+    if (hashRoute && routes.has(hashRoute)) {
+      currentRoute = hashRoute;
+    }
+
+    router.render();
+
+    events.emit("core:ready", platform);
+
+    console.log("WORLD FIND Core initialized.");
+    console.log(platform.getStatus());
+  }
+
+  window.addEventListener("hashchange", function () {
+    const path = window.location.hash.replace(/^#/, "");
+
+    if (routes.has(path)) {
+      currentRoute = path;
+      router.render();
+
+      events.emit("navigation:change", {
+        route: currentRoute
+      });
+    }
+  });
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initialize);
+  } else {
+    initialize();
+  }
+
+})();
