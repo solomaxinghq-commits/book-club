@@ -5,96 +5,72 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <meta name="theme-color" content="#050914">
-<title>WORLD FIND — Живое ядро</title>
+<title>WORLD FIND — Living Core</title>
 
 <style>
 :root {
   --bg:#050914;
-  --panel:rgba(12,24,44,.94);
-  --blue:#55d8ff;
-  --cyan:#75f5ff;
-  --purple:#9b75ff;
-  --text:#e9f7ff;
-  --muted:#829bb8;
+  --blue:#55cfff;
+  --cyan:#8af5ff;
+  --purple:#9875ff;
+  --white:#eaf7ff;
+  --muted:#8ca4bd;
 }
-
-* { box-sizing:border-box; }
-
+* {box-sizing:border-box}
 body {
   margin:0;
   min-height:100vh;
   min-height:100dvh;
   overflow:hidden;
-  color:var(--text);
+  color:var(--white);
+  font-family:Inter,Arial,sans-serif;
   background:
-    radial-gradient(ellipse at 50% 43%, #142746 0%, #091326 38%, #050914 78%);
-  font-family:Arial, sans-serif;
+    radial-gradient(ellipse at 50% 45%,#142844 0%,#0a1528 36%,#050914 76%);
 }
-
-button,input { font:inherit; }
-button { color:inherit; }
-
+button,input {font:inherit}
+button {color:inherit}
 .app {
   min-height:100vh;
   min-height:100dvh;
   display:flex;
   flex-direction:column;
   position:relative;
-  overflow:hidden;
+  isolation:isolate;
 }
-
-.stars {
+.ambient {
   position:absolute;
   inset:0;
+  z-index:-1;
   pointer-events:none;
-  opacity:.5;
-  background-image:
-    radial-gradient(2px 2px at 15% 20%,#9deaff 50%,transparent),
-    radial-gradient(1px 1px at 80% 15%,#fff 50%,transparent),
-    radial-gradient(2px 2px at 75% 75%,#8b9dff 50%,transparent),
-    radial-gradient(1px 1px at 20% 80%,#fff 50%,transparent),
-    radial-gradient(1px 1px at 50% 10%,#fff 50%,transparent),
-    radial-gradient(2px 2px at 90% 48%,#78dfff 50%,transparent);
-  background-size:270px 250px;
+  background:
+    radial-gradient(circle at 18% 22%,rgba(68,143,255,.10),transparent 25%),
+    radial-gradient(circle at 83% 72%,rgba(136,83,255,.09),transparent 26%);
 }
-
 header {
-  height:65px;
-  padding:0 19px;
+  height:66px;
+  flex-shrink:0;
   display:flex;
   align-items:center;
   justify-content:space-between;
-  z-index:5;
-  border-bottom:1px solid rgba(120,190,255,.08);
+  padding:0 19px;
+  border-bottom:1px solid rgba(130,190,255,.09);
 }
-
-.logo {
-  font-size:15px;
-  letter-spacing:3px;
+.brand {
+  font-size:14px;
   font-weight:700;
+  letter-spacing:3px;
 }
-
-.logo span { color:var(--blue); }
-
-.header-actions {
-  display:flex;
-  gap:10px;
-}
-
-.icon-button {
-  width:39px;
-  height:39px;
+.brand span {color:var(--blue)}
+.top-actions {display:flex;gap:9px}
+.top-button {
+  width:39px;height:39px;
   border-radius:50%;
-  border:1px solid rgba(119,203,255,.2);
-  background:rgba(17,36,62,.65);
-  display:grid;
-  place-items:center;
-  color:#a8eaff;
+  border:1px solid rgba(120,205,255,.19);
+  background:rgba(17,34,58,.65);
+  color:#a8e9ff;
   cursor:pointer;
+  font-size:17px;
 }
-
-.icon-button:active { transform:scale(.93); }
-
 main {
   flex:1;
   min-height:0;
@@ -102,746 +78,605 @@ main {
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  position:relative;
-  padding:8px 14px 18px;
-  z-index:2;
+  padding:12px 15px 18px;
 }
-
-.intro {
+.heading {
   text-align:center;
   margin-bottom:5px;
 }
-
-.intro h1 {
-  font-size:clamp(19px,5vw,25px);
+.heading h1 {
+  font-size:clamp(18px,5vw,23px);
   letter-spacing:5px;
-  margin:0 0 7px;
   font-weight:500;
+  margin:0 0 8px;
 }
-
-.intro p {
-  font-size:11px;
+.heading p {
   color:var(--muted);
+  font-size:10px;
   letter-spacing:2px;
   margin:0;
 }
-
-.universe {
-  width:min(92vw,410px);
-  height:min(92vw,410px);
+.stage {
+  width:min(94vw,430px);
+  height:min(94vw,430px);
   max-height:48vh;
+  min-height:285px;
   position:relative;
   flex-shrink:0;
-  touch-action:none;
+  touch-action:pan-y;
 }
-
-.orbit {
+.ring {
   position:absolute;
-  left:50%;
-  top:50%;
-  width:66%;
-  height:66%;
-  border:1px solid rgba(83,194,255,.13);
+  left:50%;top:50%;
+  transform:translate(-50%,-50%);
+  border:1px solid rgba(93,194,255,.12);
   border-radius:50%;
+  pointer-events:none;
+}
+.ring.one {width:46%;height:46%}
+.ring.two {width:69%;height:69%;border-color:rgba(142,115,255,.12)}
+.ring.three {
+  width:94%;height:94%;
+  border-style:dashed;
+  border-color:rgba(100,187,255,.09);
+}
+.axis {
+  position:absolute;
+  left:50%;top:50%;
+  width:78%;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(97,192,255,.14),transparent);
   transform:translate(-50%,-50%);
   pointer-events:none;
 }
-
-.orbit.two {
-  width:85%;
-  height:85%;
-  border-color:rgba(145,112,255,.12);
+.axis.vertical {
+  width:1px;height:78%;
+  background:linear-gradient(transparent,rgba(97,192,255,.14),transparent);
 }
-
-.orbit.three {
-  width:99%;
-  height:99%;
-  border-style:dashed;
-  border-color:rgba(83,194,255,.09);
-  animation:orbit 45s linear infinite;
-}
-
-@keyframes orbit {
-  to { transform:translate(-50%,-50%) rotate(360deg); }
-}
-
-.direction {
+.core-position {
   position:absolute;
-  width:83px;
-  min-height:57px;
-  border:1px solid rgba(103,193,255,.19);
-  border-radius:15px;
-  background:rgba(12,30,53,.82);
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  gap:4px;
-  color:#b9d9f0;
-  font-size:11px;
-  transition:.2s;
-  z-index:2;
-  cursor:pointer;
-  user-select:none;
-}
-
-.direction .symbol {
-  font-size:19px;
-  color:#80dcff;
-}
-
-.direction.active {
-  border-color:#79eaff;
-  background:rgba(34,105,145,.5);
-  box-shadow:0 0 24px rgba(64,208,255,.35);
-  color:white;
-  transform:scale(1.08);
-}
-
-.d-map { left:50%; top:0; transform:translateX(-50%); }
-.d-market { right:0; top:50%; transform:translateY(-50%); }
-.d-services { left:0; top:50%; transform:translateY(-50%); }
-.d-work { left:50%; bottom:0; transform:translateX(-50%); }
-
-.d-delivery { right:7%; top:12%; }
-.d-learn { left:7%; top:12%; }
-.d-business { right:7%; bottom:12%; }
-.d-ai { left:7%; bottom:12%; }
-
-.d-map.active { transform:translateX(-50%) scale(1.08); }
-.d-market.active,.d-services.active { transform:translateY(-50%) scale(1.08); }
-.d-work.active { transform:translateX(-50%) scale(1.08); }
-
-.core-wrap {
-  position:absolute;
-  left:50%;
-  top:50%;
-  width:112px;
-  height:112px;
+  left:50%;top:50%;
+  width:100px;height:100px;
   transform:translate(-50%,-50%);
-  z-index:4;
+  z-index:5;
   display:grid;
   place-items:center;
 }
-
-.core-halo {
+.core-glow {
   position:absolute;
-  width:100%;
-  height:100%;
+  width:100%;height:100%;
   border-radius:50%;
-  background:radial-gradient(circle,rgba(42,186,255,.2),rgba(112,78,255,.08) 55%,transparent 72%);
-  animation:breathe 3s ease-in-out infinite;
+  background:radial-gradient(circle,rgba(69,209,255,.28),rgba(126,91,255,.10) 48%,transparent 72%);
+  animation:glow 3.5s ease-in-out infinite;
   pointer-events:none;
 }
-
 .core {
-  position:relative;
-  width:68px;
-  height:68px;
-  border:1px solid rgba(153,236,255,.8);
+  width:66px;height:66px;
+  border:1px solid rgba(166,245,255,.8);
   border-radius:50%;
-  background:
-    radial-gradient(circle at 36% 30%,#e4ffff 0%,#71eaff 9%,#267bc1 30%,#16275e 58%,#080d27 78%);
-  box-shadow:
-    0 0 13px #4ddaff,
-    0 0 32px rgba(57,173,255,.75),
-    inset 0 0 17px rgba(140,240,255,.8);
+  position:relative;
   cursor:grab;
   touch-action:none;
   display:grid;
   place-items:center;
+  background:
+    radial-gradient(circle at 34% 28%,#eaffff 0%,#8af4ff 5%,#39b9ee 19%,#225baf 43%,#292568 68%,#080e2a 100%);
+  box-shadow:
+    0 0 12px rgba(80,218,255,.9),
+    0 0 30px rgba(61,171,255,.65),
+    0 0 55px rgba(126,91,255,.28),
+    inset 0 0 17px rgba(187,250,255,.55);
   transition:box-shadow .2s;
 }
-
-.core:active { cursor:grabbing; }
-
-.core::before {
+.core:before,.core:after {
   content:"";
   position:absolute;
-  inset:-9px;
-  border:1px solid rgba(102,221,255,.35);
   border-radius:50%;
-  animation:spin 8s linear infinite;
+  pointer-events:none;
 }
-
-.core::after {
-  content:"";
-  position:absolute;
-  inset:-17px;
-  border:1px dashed rgba(151,121,255,.28);
-  border-radius:50%;
-  animation:spin 14s linear infinite reverse;
+.core:before {
+  inset:-8px;
+  border:1px solid rgba(100,222,255,.38);
+  border-left-color:transparent;
+  transform:rotate(-35deg);
 }
-
+.core:after {
+  inset:-14px;
+  border:1px dashed rgba(162,133,255,.35);
+}
 .core.dragging {
-  box-shadow:0 0 24px #6cecff,0 0 55px #596eff;
+  cursor:grabbing;
+  box-shadow:0 0 24px #8af5ff,0 0 60px #597dff;
 }
-
-.core-dot {
-  width:13px;
-  height:13px;
-  background:#efffff;
+.core-light {
+  width:11px;height:11px;
   border-radius:50%;
-  box-shadow:0 0 18px white,0 0 35px #63dfff;
+  background:#fff;
+  box-shadow:0 0 14px white,0 0 28px #8af5ff;
 }
-
-@keyframes breathe {
-  50% { transform:scale(1.25); opacity:.65; }
+@keyframes glow {
+  50% {transform:scale(1.15);opacity:.72}
 }
-
-@keyframes spin {
-  to { transform:rotate(360deg); }
+.function {
+  position:absolute;
+  width:91px;
+  min-height:54px;
+  padding:6px 4px;
+  border-radius:14px;
+  border:1px solid rgba(115,196,255,.17);
+  background:rgba(10,27,49,.84);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  gap:3px;
+  font-size:10px;
+  color:#bfd8ee;
+  opacity:0;
+  transform:scale(.75);
+  pointer-events:none;
+  transition:opacity .25s,transform .25s,border-color .2s,background .2s;
+  z-index:3;
+  cursor:pointer;
+  backdrop-filter:blur(9px);
 }
-
-.instruction {
-  color:#8ba8c4;
+.function .symbol {font-size:18px;color:#83e4ff}
+.stage.open .function {
+  opacity:1;
+  transform:scale(1);
+  pointer-events:auto;
+}
+.function.active {
+  border-color:#80eaff;
+  background:rgba(34,91,132,.9);
+  box-shadow:0 0 22px rgba(69,205,255,.3);
+}
+.f-map {left:50%;top:1%;transform:translateX(-50%) scale(.75)}
+.f-market {right:0;top:50%;transform:translateY(-50%) scale(.75)}
+.f-services {left:0;top:50%;transform:translateY(-50%) scale(.75)}
+.f-work {left:50%;bottom:1%;transform:translateX(-50%) scale(.75)}
+.f-delivery {right:5%;top:12%}
+.f-learn {left:5%;top:12%}
+.f-business {right:5%;bottom:12%}
+.f-ai {left:5%;bottom:12%}
+.stage.open .f-map {transform:translateX(-50%) scale(1)}
+.stage.open .f-market,.stage.open .f-services {transform:translateY(-50%) scale(1)}
+.stage.open .f-work {transform:translateX(-50%) scale(1)}
+.stage.open .function:active {transform:scale(.94)}
+.stage.open .f-map:active,.stage.open .f-work:active {transform:translateX(-50%) scale(.94)}
+.stage.open .f-market:active,.stage.open .f-services:active {transform:translateY(-50%) scale(.94)}
+.hint {
+  color:#91abc4;
   font-size:11px;
   text-align:center;
-  margin:0 0 12px;
-  letter-spacing:.5px;
+  margin:0 0 14px;
+  min-height:15px;
 }
-
 .search {
-  width:min(92%,410px);
-  height:51px;
+  width:min(94%,410px);
+  height:52px;
   display:flex;
   align-items:center;
   gap:10px;
   padding:0 15px;
-  border:1px solid rgba(101,196,255,.25);
-  background:rgba(13,29,51,.9);
+  border:1px solid rgba(103,199,255,.24);
+  background:rgba(12,28,49,.9);
   border-radius:17px;
-  box-shadow:0 8px 30px rgba(0,0,0,.2);
+  box-shadow:0 10px 35px rgba(0,0,0,.2);
 }
-
-.search span {
-  font-size:19px;
-  color:#80dfff;
-}
-
+.search-icon {font-size:20px;color:#83e4ff}
 .search input {
-  width:100%;
-  border:0;
-  outline:0;
-  color:white;
+  flex:1;min-width:0;
+  border:0;outline:0;
   background:transparent;
+  color:white;
   font-size:13px;
 }
-
-.search input::placeholder { color:#7792ad; }
-
+.search input::placeholder {color:#829bb4}
 .search button {
-  border:0;
-  background:transparent;
-  color:#80dfff;
-  font-size:19px;
-  cursor:pointer;
+  border:0;background:transparent;
+  color:#8aeaff;font-size:19px;
 }
-
-.status {
-  color:#718ca8;
-  font-size:10px;
+.city {
   margin-top:12px;
-  text-align:center;
-}
-
-footer {
-  padding:8px 15px 15px;
-  text-align:center;
-  color:#607d9b;
+  color:#819bb5;
   font-size:10px;
-  letter-spacing:1px;
-  z-index:2;
 }
-
-.panel {
-  position:fixed;
-  inset:0;
+footer {
+  text-align:center;
+  padding:8px 12px 14px;
+  color:#66819d;
+  font-size:9px;
+  letter-spacing:2px;
+}
+.overlay {
+  position:fixed;inset:0;
   z-index:10;
   display:none;
-  align-items:center;
-  justify-content:center;
+  align-items:center;justify-content:center;
   padding:18px;
   background:rgba(2,7,17,.78);
-  backdrop-filter:blur(12px);
+  backdrop-filter:blur(13px);
 }
-
-.panel.show { display:flex; }
-
-.panel-card {
+.overlay.show {display:flex}
+.dialog {
   width:min(100%,430px);
-  max-height:85vh;
+  max-height:82vh;
   overflow:auto;
-  border:1px solid rgba(108,206,255,.25);
-  background:linear-gradient(145deg,#122744,#081326);
+  border:1px solid rgba(112,202,255,.25);
   border-radius:23px;
   padding:22px;
-  box-shadow:0 0 50px rgba(35,138,255,.13);
+  background:linear-gradient(145deg,#142b49,#081326);
+  box-shadow:0 0 55px rgba(47,139,255,.14);
 }
-
-.panel-top {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:18px;
+.dialog-head {
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:15px;
 }
-
-.panel-top h2 {
-  font-size:19px;
-  font-weight:500;
-  margin:0;
-}
-
+.dialog h2 {font-size:19px;font-weight:500;margin:0}
 .close {
-  width:34px;
-  height:34px;
-  border-radius:50%;
-  border:1px solid #34516e;
-  background:#132b48;
-  cursor:pointer;
+  width:34px;height:34px;border-radius:50%;
+  border:1px solid #385675;background:#102642;
+  cursor:pointer;font-size:20px;
 }
-
-.panel-description {
-  color:#a3bdd5;
-  font-size:13px;
-  line-height:1.6;
+.description {font-size:13px;line-height:1.6;color:#a9c1d8}
+.items {
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:9px;margin-top:15px;
 }
-
-.panel-list {
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:9px;
-  margin-top:16px;
-}
-
-.panel-item {
-  border:1px solid rgba(111,190,255,.17);
-  background:rgba(18,43,70,.7);
-  border-radius:13px;
-  padding:13px 9px;
+.item {
+  padding:13px 10px;
   text-align:left;
-  cursor:pointer;
-  font-size:12px;
+  border-radius:13px;
+  border:1px solid rgba(120,195,255,.17);
+  background:rgba(20,46,75,.75);
+  font-size:12px;cursor:pointer;
 }
-
-.panel-item span {
-  display:block;
-  font-size:19px;
-  margin-bottom:6px;
-}
-
-.result {
-  border-bottom:1px solid rgba(130,190,255,.13);
-  padding:12px 0;
-  font-size:13px;
-}
-
-.result small {
-  display:block;
-  color:#8ca8c4;
-  margin-top:5px;
-}
-
+.item span {display:block;font-size:19px;margin-bottom:6px}
 .text-input {
-  width:100%;
-  padding:13px;
-  border:1px solid #345779;
-  background:#09182c;
-  color:white;
-  border-radius:12px;
-  outline:0;
-  margin-top:10px;
+  width:100%;padding:13px;margin-top:10px;
+  color:white;background:#09182c;
+  border:1px solid #365779;border-radius:12px;
 }
-
 .action {
+  padding:12px 15px;margin-top:12px;
   border:1px solid rgba(111,208,255,.3);
-  background:#164269;
-  border-radius:12px;
-  padding:12px 16px;
-  margin-top:12px;
-  cursor:pointer;
+  border-radius:12px;background:#164269;cursor:pointer;
 }
-
 .toast {
-  position:fixed;
-  bottom:25px;
-  left:50%;
-  transform:translateX(-50%) translateY(20px);
-  opacity:0;
-  pointer-events:none;
-  background:#173451;
-  border:1px solid #4a9bc2;
-  border-radius:12px;
-  padding:11px 16px;
-  font-size:12px;
-  z-index:20;
-  transition:.25s;
-  text-align:center;
-  width:max-content;
-  max-width:90%;
+  position:fixed;z-index:20;
+  bottom:24px;left:50%;
+  transform:translate(-50%,15px);
+  opacity:0;pointer-events:none;
+  padding:11px 16px;border-radius:12px;
+  background:#173451;border:1px solid #4a9bc2;
+  font-size:12px;transition:.2s;
+  max-width:90%;text-align:center;
 }
-
-.toast.show {
-  opacity:1;
-  transform:translateX(-50%) translateY(0);
-}
-
-@media(max-height:700px) {
-  .intro { margin-top:2px; }
-  .universe { width:min(84vw,340px); height:min(84vw,340px); }
-  .core-wrap { width:96px;height:96px; }
-  .core { width:59px;height:59px; }
-  .direction { width:73px;min-height:49px;font-size:10px; }
-  .search { height:46px; }
-  footer { padding-bottom:8px; }
-}
-
-@media(min-width:700px) {
-  .universe { width:410px;height:410px; }
+.toast.show {opacity:1;transform:translate(-50%,0)}
+@media(max-height:690px) {
+  .heading {margin-bottom:0}
+  .stage {width:min(84vw,350px);height:min(84vw,350px);min-height:260px}
+  .function {width:79px;min-height:48px;font-size:9px}
+  .core-position {width:88px;height:88px}
+  .core {width:59px;height:59px}
+  .search {height:46px}
+  footer {padding-bottom:7px}
 }
 </style>
 </head>
 
 <body>
 <div class="app">
-<div class="stars"></div>
+<div class="ambient"></div>
 
 <header>
-  <div class="logo">WORLD <span>FIND</span></div>
-  <div class="header-actions">
-    <button class="icon-button" id="soundButton" aria-label="Звук">♪</button>
-    <button class="icon-button" id="locationButton" aria-label="Местоположение">⌖</button>
-    <button class="icon-button" id="moreButton" aria-label="Дополнительно">•••</button>
+  <div class="brand">WORLD <span>FIND</span></div>
+  <div class="top-actions">
+    <button class="top-button" id="sound" aria-label="Звук">♫</button>
+    <button class="top-button" id="location" aria-label="Местоположение">⌖</button>
+    <button class="top-button" id="more" aria-label="Меню">•••</button>
   </div>
 </header>
 
 <main>
-  <div class="intro">
+  <div class="heading">
     <h1>ЖИВОЕ ЯДРО</h1>
     <p>ОДИН МИР · МНОГО ВОЗМОЖНОСТЕЙ</p>
   </div>
 
-  <div class="universe" id="universe">
-    <div class="orbit"></div>
-    <div class="orbit two"></div>
-    <div class="orbit three"></div>
+  <div class="stage" id="stage">
+    <div class="ring one"></div>
+    <div class="ring two"></div>
+    <div class="ring three"></div>
+    <div class="axis"></div>
+    <div class="axis vertical"></div>
 
-    <button class="direction d-map" data-id="map">
-      <span class="symbol">◎</span>Карта
+    <button class="function f-map" data-id="map">
+      <span class="symbol">◎</span>Карта мира
     </button>
-    <button class="direction d-market" data-id="market">
+    <button class="function f-market" data-id="market">
       <span class="symbol">◇</span>Товары
     </button>
-    <button class="direction d-services" data-id="services">
+    <button class="function f-services" data-id="services">
       <span class="symbol">⚙</span>Услуги
     </button>
-    <button class="direction d-work" data-id="work">
+    <button class="function f-work" data-id="work">
       <span class="symbol">▣</span>Работа
     </button>
-    <button class="direction d-delivery" data-id="delivery">
+    <button class="function f-delivery" data-id="delivery">
       <span class="symbol">⇢</span>Доставка
     </button>
-    <button class="direction d-learn" data-id="learn">
+    <button class="function f-learn" data-id="learn">
       <span class="symbol">⌘</span>Обучение
     </button>
-    <button class="direction d-business" data-id="business">
+    <button class="function f-business" data-id="business">
       <span class="symbol">▤</span>Бизнес
     </button>
-    <button class="direction d-ai" data-id="ai">
-      <span class="symbol">✧</span>ИИ
+    <button class="function f-ai" data-id="ai">
+      <span class="symbol">✧</span>ИИ-помощник
     </button>
 
-    <div class="core-wrap" id="coreWrap">
-      <div class="core-halo"></div>
-      <div class="core" id="core" role="button" aria-label="Переместить живое ядро">
-        <div class="core-dot"></div>
+    <div class="core-position" id="corePosition">
+      <div class="core-glow"></div>
+      <div class="core" id="core" role="button" aria-label="Живое ядро">
+        <div class="core-light"></div>
       </div>
     </div>
   </div>
 
-  <p class="instruction" id="instruction">
-    Перемещай ядро в сторону нужного направления
-  </p>
+  <p class="hint" id="hint">Нажми на ядро, чтобы открыть пространство возможностей</p>
 
   <form class="search" id="searchForm">
-    <span>⌕</span>
-    <input id="searchInput" type="search"
-      placeholder="Что ты ищешь в этом мире?"
-      autocomplete="off">
-    <button type="submit" aria-label="Искать">➜</button>
+    <span class="search-icon">⌕</span>
+    <input id="query" placeholder="Что ты ищешь в этом мире?" autocomplete="off">
+    <button type="submit" aria-label="Поиск">➜</button>
   </form>
 
-  <div class="status" id="cityStatus">⌖ Ош · Кыргызстан</div>
+  <div class="city" id="cityLabel">⌖ Ош · Кыргызстан</div>
 </main>
 
 <footer>ONE PLANET · MANY POSSIBILITIES</footer>
 </div>
 
-<div class="panel" id="panel">
-  <div class="panel-card">
-    <div class="panel-top">
-      <h2 id="panelTitle">WORLD FIND</h2>
-      <button class="close" id="closePanel">×</button>
+<div class="overlay" id="overlay">
+  <div class="dialog">
+    <div class="dialog-head">
+      <h2 id="dialogTitle">WORLD FIND</h2>
+      <button class="close" id="close">×</button>
     </div>
-    <div id="panelContent"></div>
+    <div id="dialogContent"></div>
   </div>
 </div>
-
 <div class="toast" id="toast"></div>
-
-<!-- Существующая архитектура проекта -->
-<div data-wf-outlet hidden></div>
-<script src="core.js"></script>
-<script src="page-catalog.js"></script>
-<script src="integration.js"></script>
 
 <script>
 (() => {
 "use strict";
 
+const stage = document.getElementById("stage");
 const core = document.getElementById("core");
-const coreWrap = document.getElementById("coreWrap");
-const universe = document.getElementById("universe");
-const directions = [...document.querySelectorAll(".direction")];
-const panel = document.getElementById("panel");
-const panelTitle = document.getElementById("panelTitle");
-const panelContent = document.getElementById("panelContent");
-const instruction = document.getElementById("instruction");
+const overlay = document.getElementById("overlay");
+const title = document.getElementById("dialogTitle");
+const content = document.getElementById("dialogContent");
+const hint = document.getElementById("hint");
 const toast = document.getElementById("toast");
+const buttons = [...document.querySelectorAll(".function")];
 
-const sections = {
-  map: {
-    title:"Карта мира",
-    description:"Исследуй города, районы, магазины, места и предложения вокруг себя.",
-    items:["🌍 Исследовать мир","📍 Места рядом","🏙 Города","🗺 Районы"]
-  },
-  market: {
-    title:"Товары",
-    description:"Поиск товаров, магазинов, поставщиков и доступных предложений.",
-    items:["🛍 Все товары","🏪 Магазины","📦 Предложения","🤝 Поставщики"]
-  },
-  services: {
-    title:"Услуги",
-    description:"Находи специалистов и услуги в нужном городе или районе.",
-    items:["🔧 Мастера","🧹 Бытовые услуги","💻 Онлайн-услуги","👨‍🔧 Специалисты"]
-  },
-  work: {
-    title:"Работа и задания",
-    description:"Ищи работу, исполнителей, временные задания и проекты.",
-    items:["💼 Вакансии","📝 Задания","🧑‍💻 Удалённая работа","🤝 Исполнители"]
-  },
-  delivery: {
-    title:"Доставка",
-    description:"Будущее пространство заказов, доставки и отслеживания. Реальные службы пока не подключены.",
-    items:["🚚 Заказы","📍 Отслеживание","🏍 Курьеры","📦 Мои доставки"]
-  },
-  learn: {
-    title:"Обучение",
-    description:"Образование, курсы, навыки, наставники и учебные материалы.",
-    items:["📚 Курсы","🎓 Образование","🧠 Навыки","👨‍🏫 Наставники"]
-  },
-  business: {
-    title:"Бизнес",
-    description:"Инструменты для компаний, предпринимателей и партнёров.",
-    items:["🏢 Компании","🤝 Партнёры","📊 Инструменты","📣 Продвижение"]
-  },
-  ai: {
-    title:"ИИ-помощник",
-    description:"Помощь в поиске, выборе направления и формулировке запросов. Интеллектуальный сервис будет подключён отдельно.",
-    items:["✧ Помочь найти","✧ Сформировать запрос","✧ Подобрать направление","✧ Мои запросы"]
-  }
+const data = {
+  map:["Карта мира","Исследуй города, районы, места и точки на карте.",["🌍 Исследовать мир","📍 Места рядом","🏙 Города","🗺 Районы"]],
+  market:["Товары и магазины","Поиск товаров, магазинов, поставщиков и предложений.",["🛍 Все товары","🏪 Магазины","📦 Предложения","🤝 Поставщики"]],
+  services:["Услуги и специалисты","Находи специалистов и услуги в нужном месте.",["🔧 Мастера","🧹 Бытовые услуги","💻 Онлайн-услуги","👨‍🔧 Специалисты"]],
+  work:["Работа и задания","Вакансии, задания, проекты и исполнители.",["💼 Вакансии","📝 Задания","🧑‍💻 Удалённая работа","🤝 Исполнители"]],
+  delivery:["Доставка","Пространство заказов и доставки. Службы пока не подключены.",["🚚 Заказы","📍 Отслеживание","🏍 Курьеры","📦 Мои доставки"]],
+  learn:["Обучение","Курсы, навыки, знания и наставники.",["📚 Курсы","🎓 Образование","🧠 Навыки","👨‍🏫 Наставники"]],
+  business:["Бизнес","Компании, предприниматели и партнёры.",["🏢 Компании","🤝 Партнёры","📊 Инструменты","📣 Продвижение"]],
+  ai:["ИИ-помощник","Помощь с поиском и выбором направления. ИИ-сервис подключается отдельно.",["✧ Помочь найти","✧ Сформировать запрос","✧ Подобрать направление","✧ Мои запросы"]]
 };
 
-let selected = null;
+let expanded = false;
 let dragging = false;
-let startX = 0;
-let startY = 0;
-let currentX = 0;
-let currentY = 0;
-let soundEnabled = false;
+let moved = false;
+let startX = 0, startY = 0;
+let dx = 0, dy = 0;
 let city = "Ош";
+let soundOn = false;
 let toastTimer;
 
 function notify(message) {
   toast.textContent = message;
   toast.classList.add("show");
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => toast.classList.remove("show"),2400);
+  toastTimer = setTimeout(() => toast.classList.remove("show"),2300);
 }
-
-function selectDirection(id) {
-  selected = id;
-  directions.forEach(button => {
-    button.classList.toggle("active",button.dataset.id === id);
-  });
-
-  instruction.textContent = id
-    ? "Выбрано: " + sections[id].title + " · отпусти ядро"
-    : "Перемещай ядро в сторону нужного направления";
+function toggleSpace(force) {
+  expanded = typeof force === "boolean" ? force : !expanded;
+  stage.classList.toggle("open",expanded);
+  hint.textContent = expanded
+    ? "Перемести ядро к нужному направлению"
+    : "Нажми на ядро, чтобы открыть пространство возможностей";
 }
-
-function detectDirection(dx,dy) {
+function highlight(id) {
+  buttons.forEach(b => b.classList.toggle("active",b.dataset.id === id));
+}
+function detect(dx,dy) {
   const distance = Math.hypot(dx,dy);
-  if(distance < 35) return null;
-
-  const angle = Math.atan2(-dy,dx) * 180 / Math.PI;
-  const normalized = (angle + 360) % 360;
-
-  if(normalized >= 67.5 && normalized < 112.5) return "map";
-  if(normalized >= 22.5 && normalized < 67.5) return "delivery";
-  if(normalized >= 337.5 || normalized < 22.5) return "market";
-  if(normalized >= 247.5 && normalized < 292.5) return "work";
-  if(normalized >= 202.5 && normalized < 247.5) return "business";
-  if(normalized >= 157.5 && normalized < 202.5) return "services";
-  if(normalized >= 112.5 && normalized < 157.5) return "learn";
+  if(distance < 30) return null;
+  const angle = (Math.atan2(-dy,dx)*180/Math.PI+360)%360;
+  if(angle >= 67.5 && angle < 112.5) return "map";
+  if(angle >= 22.5 && angle < 67.5) return "delivery";
+  if(angle >= 337.5 || angle < 22.5) return "market";
+  if(angle >= 247.5 && angle < 292.5) return "work";
+  if(angle >= 202.5 && angle < 247.5) return "business";
+  if(angle >= 157.5 && angle < 202.5) return "services";
+  if(angle >= 112.5 && angle < 157.5) return "learn";
   return "ai";
 }
-
 function resetCore() {
   core.style.transform = "";
   core.classList.remove("dragging");
-  coreWrap.style.transform = "translate(-50%,-50%)";
   dragging = false;
 }
+function openSection(id) {
+  const item = data[id];
+  if(!item) return;
+  title.textContent = item[0];
+  content.innerHTML = `
+    <p class="description">${escapeHTML(item[1])}</p>
+    <div class="items">
+      ${item[2].map(x=>`<button class="item" type="button">${escapeHTML(x)}</button>`).join("")}
+    </div>
+    <p class="description" style="margin-top:17px">WORLD FIND · Раздел платформы</p>
+  `;
+  content.querySelectorAll(".item").forEach(button => {
+    button.addEventListener("click",()=>notify("Этот подраздел будет подключён на следующем этапе"));
+  });
+  overlay.classList.add("show");
+  toggleSpace(false);
+  highlight(null);
+}
+function escapeHTML(value) {
+  return String(value).replace(/[&<>"']/g,c=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  })[c]);
+}
 
-core.addEventListener("pointerdown", event => {
+core.addEventListener("click",() => {
+  if(!moved) toggleSpace();
+});
+
+core.addEventListener("pointerdown",event => {
   dragging = true;
+  moved = false;
   startX = event.clientX;
   startY = event.clientY;
-  currentX = 0;
-  currentY = 0;
-  selected = null;
+  dx = 0; dy = 0;
   core.classList.add("dragging");
   core.setPointerCapture(event.pointerId);
 });
 
-core.addEventListener("pointermove", event => {
+core.addEventListener("pointermove",event => {
   if(!dragging) return;
-
-  currentX = event.clientX - startX;
-  currentY = event.clientY - startY;
-
-  const maxMove = 105;
-  const distance = Math.hypot(currentX,currentY);
-  if(distance > maxMove) {
-    const factor = maxMove / distance;
-    currentX *= factor;
-    currentY *= factor;
+  dx = event.clientX-startX;
+  dy = event.clientY-startY;
+  if(Math.hypot(dx,dy)>9) moved = true;
+  const max = 112;
+  const length = Math.hypot(dx,dy);
+  if(length>max) {
+    dx *= max/length;
+    dy *= max/length;
   }
-
-  core.style.transform =
-    `translate(${currentX}px,${currentY}px)`;
-
-  const id = detectDirection(currentX,currentY);
-  selectDirection(id);
+  core.style.transform = `translate(${dx}px,${dy}px)`;
+  const id = detect(dx,dy);
+  highlight(id);
+  if(id) hint.textContent = data[id][0]+" · отпусти ядро";
 });
 
-core.addEventListener("pointerup", () => {
+core.addEventListener("pointerup",() => {
   if(!dragging) return;
-  const destination = selected;
+  const id = detect(dx,dy);
   resetCore();
-
-  if(destination) openSection(destination);
-  else {
-    selectDirection(null);
-    instruction.textContent = "Перемещай ядро в сторону нужного направления";
+  if(id) {
+    openSection(id);
+  } else if(moved) {
+    highlight(null);
+    hint.textContent = "Направление не выбрано. Попробуй ещё раз";
   }
+  setTimeout(()=>{moved=false},100);
+});
+core.addEventListener("pointercancel",() => {
+  resetCore();highlight(null);moved=false;
 });
 
-core.addEventListener("pointercancel", () => {
-  resetCore();
-  selectDirection(null);
+buttons.forEach(button => button.addEventListener("click",() => {
+  openSection(button.dataset.id);
+}));
+
+document.getElementById("close").addEventListener("click",() => {
+  overlay.classList.remove("show");
+});
+overlay.addEventListener("click",event => {
+  if(event.target===overlay) overlay.classList.remove("show");
 });
 
-directions.forEach(button => {
-  button.addEventListener("click",() => {
-    openSection(button.dataset.id);
-  });
+document.getElementById("more").addEventListener("click",() => {
+  title.textContent = "Пространство системы";
+  content.innerHTML = `
+    <div class="items">
+      <button class="item" data-menu="profile"><span>👤</span>Профиль</button>
+      <button class="item" data-menu="messages"><span>💬</span>Сообщения</button>
+      <button class="item" data-menu="settings"><span>⚙</span>Настройки</button>
+      <button class="item" data-menu="about"><span>🌐</span>О проекте</button>
+    </div>`;
+  content.querySelectorAll("[data-menu]").forEach(b=>b.addEventListener("click",()=>notify("Раздел готовится к подключению")));
+  overlay.classList.add("show");
 });
 
-function openSection(id) {
-  const section = sections[id];
-  if(!section) return;
-
-  selectDirection(id);
-  panelTitle.textContent = section.title;
-
-  panelContent.innerHTML = `
-    <p class="panel-description">${section.description}</p>
-    <div class="panel-list">
-      ${section.items.map(item =>
-        `<button class="panel-item" type="button">${item}</button>`
-      ).join("")}
-    </div>
-    <p class="panel-description" style="margin-top:17px">
-      WORLD FIND · Раздел демонстрационного прототипа
-    </p>
-  `;
-
-  panelContent.querySelectorAll(".panel-item").forEach(button => {
-    button.addEventListener("click",() => {
-      notify("Это направление пока находится в разработке");
-    });
-  });
-
-  panel.classList.add("show");
-}
-
-function closePanel() {
-  panel.classList.remove("show");
-  selectDirection(null);
-}
-
-document.getElementById("closePanel").addEventListener("click",closePanel);
-
-panel.addEventListener("click",event => {
-  if(event.target === panel) closePanel();
+document.getElementById("sound").addEventListener("click",event => {
+  soundOn=!soundOn;
+  event.currentTarget.textContent=soundOn?"♫":"♪";
+  notify(soundOn?"Звуковой режим включён":"Звуковой режим выключен");
 });
 
-document.getElementById("moreButton").addEventListener("click",() => {
-  panelTitle.textContent = "Дополнительные возможности";
-  panelContent.innerHTML = `
-    <div class="panel-list">
-      <button class="panel-item" data-action="profile"><span>👤</span>Профиль</button>
-      <button class="panel-item" data-action="messages"><span>💬</span>Сообщения</button>
-      <button class="panel-item" data-action="settings"><span>⚙</span>Настройки</button>
-      <button class="panel-item" data-action="about"><span>🌐</span>О проекте</button>
-    </div>
-  `;
-  panelContent.querySelectorAll("[data-action]").forEach(button => {
-    button.addEventListener("click",() => {
-      notify("Раздел " + button.textContent.trim() + " готовится");
-    });
-  });
-  panel.classList.add("show");
-});
-
-document.getElementById("soundButton").addEventListener("click",event => {
-  soundEnabled = !soundEnabled;
-  event.currentTarget.textContent = soundEnabled ? "♫" : "♪";
-  notify(soundEnabled ? "Звуковой режим включён" : "Звуковой режим выключен");
-});
-
-document.getElementById("locationButton").addEventListener("click",() => {
-  panelTitle.textContent = "Местоположение";
-  panelContent.innerHTML = `
-    <p class="panel-description">Укажи город для поиска предложений.</p>
-    <input class="text-input" id="cityInput" value="${city}" placeholder="Название города">
+document.getElementById("location").addEventListener("click",() => {
+  title.textContent="Местоположение";
+  content.innerHTML=`
+    <p class="description">Выбери город для поиска.</p>
+    <input class="text-input" id="cityInput" value="${escapeHTML(city)}" placeholder="Город">
     <button class="action" id="saveCity">Сохранить город</button>
-    <button class="action" id="detectCity">Запросить геолокацию</button>
-    <p class="panel-description" id="locationMessage"></p>
-  `;
-  panel.classList.add("show");
-
-  document.getElementById("saveCity").addEventListener("click",() => {
-    const value = document.getElementById("cityInput").value.trim();
-    if(!value) return;
-    city = value;
-    document.getElementById("cityStatus").textContent = "⌖ " + city;
-    closePanel();
-    notify("Город изменён: " + city);
+    <button class="action" id="detectCity">Определить местоположение</button>
+    <p class="description" id="geoMessage"></p>`;
+  overlay.classList.add("show");
+  document.getElementById("saveCity").addEventListener("click",()=>{
+    const value=document.getElementById("cityInput").value.trim();
+    if(!value)return;
+    city=value;
+    document.getElementById("cityLabel").textContent="⌖ "+city;
+    overlay.classList.remove("show");
+    notify("Город изменён: "+city);
   });
+  document.getElementById("detectCity").addEventListener("click",()=>{
+    const message=document.getElementById("geoMessage");
+    if(!navigator.geolocation){message.textContent="Геолокация недоступна в этом браузере.";return}
+    message.textContent="Ожидаем разрешение на доступ к местоположению…";
+    navigator.geolocation.getCurrentPosition(
+      p=>message.textContent="Координаты получены. Для названия города понадобится картографический сервис.",
+      ()=>message.textContent="Доступ к местоположению не предоставлен."
+    );
+  });
+});
 
-  document.getElementById("detectCity").addEventListener("click",() => {
-    const message = document.getElementById("locationMessage");
-    if(!navigator.geolocation
+const demo=[
+  ["Бананы","Товар","Ош","120 сом/кг"],
+  ["Домашние яблоки","Товар","Ош","90 сом/кг"],
+  ["Ремонт телефона","Услуга","Ош","от 500 сом"],
+  ["Настольная лампа","Товар","Бишкек","1 200 сом"],
+  ["Сумка","Товар","Бишкек","850 сом"]
+];
+
+document.getElementById("searchForm").addEventListener("submit",event=>{
+  event.preventDefault();
+  const q=document.getElementById("query").value.trim();
+  if(!q){notify("Напиши, что хочешь найти");return}
+  const matches=demo.filter(x=>x.join(" ").toLowerCase().includes(q.toLowerCase()));
+  title.textContent="Результаты поиска";
+  content.innerHTML=`
+    <p class="description">Запрос: ${escapeHTML(q)}</p>
+    ${matches.length?matches.map(x=>`
+      <div class="description" style="padding:12px 0;border-bottom:1px solid #29435f">
+        <strong>${escapeHTML(x[0])}</strong>
+        <br><small>${escapeHTML(x[1])} · ${escapeHTML(x[2])} · ${escapeHTML(x[3])}</small>
+      </div>`).join(""):`
+      <p class="description">В демонстрационных данных совпадений нет. Общая база объявлений будет подключена отдельно.</p>`}`;
+  overlay.classList.add("show");
+});
+
+})();
+</script>
+
+<!-- Подключение существующих системных модулей -->
+<script src="core.js"></script>
+<script src="page-catalog.js"></script>
+<script src="integration.js"></script>
+
+</body>
+</html>
