@@ -1,268 +1,300 @@
 
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#060914">
-<title>WORLD FIND 4.0 — Живое ядро</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#050a16">
+<title>WORLD FIND — Gesture Core</title>
 <style>
-:root{--bg:#060914;--panel:#101a30;--line:#263b60;--cyan:#62f5ff;--blue:#6085ff;--text:#eef5ff;--muted:#91a4c5;--green:#7dffc2}
 *{box-sizing:border-box}
-body{margin:0;background:radial-gradient(ellipse at 50% 0%,#14264a 0%,var(--bg) 58%);color:var(--text);font:15px system-ui,-apple-system,sans-serif;min-height:100vh}
-button,input,select,textarea{font:inherit}
-button{cursor:pointer}
-.app{max-width:850px;margin:auto;padding:16px 15px 100px}
-.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px}
-.brand{font-size:20px;font-weight:900;letter-spacing:1.5px}
-.brand span{color:var(--cyan)}
-.status{color:var(--green);font-size:10px;letter-spacing:1px;border:1px solid #285c58;border-radius:20px;padding:7px 10px}
-.subtitle{color:var(--muted);font-size:12px;margin-top:4px}
-.core-area{height:250px;display:grid;place-items:center;position:relative;overflow:hidden}
-.orbit{position:absolute;width:210px;height:210px;border:1px solid #3b8dba55;border-radius:50%;animation:spin 15s linear infinite}
-.orbit.two{width:170px;height:170px;border-color:#8c70ff66;animation-duration:10s;animation-direction:reverse}
-.orbit.three{width:130px;height:130px;border-style:dashed;animation-duration:22s}
-.core{width:92px;height:92px;border-radius:50%;border:1px solid var(--cyan);background:radial-gradient(circle at 35% 30%,#b9ffff,#337dff 35%,#141b5b 72%);box-shadow:0 0 24px #43e7ff99,0 0 75px #326eff66;z-index:2;animation:pulse 3s ease-in-out infinite}
-.orbit-dot{position:absolute;width:9px;height:9px;background:var(--cyan);border-radius:50%;top:20px;left:45%;box-shadow:0 0 15px var(--cyan)}
-.core-caption{position:absolute;bottom:8px;text-align:center;color:var(--cyan);font-size:11px;letter-spacing:3px}
-@keyframes spin{to{transform:rotate(360deg)}}
-@keyframes pulse{50%{transform:scale(1.08);box-shadow:0 0 38px #43e7ffcc,0 0 95px #326eff88}}
-.panel{background:linear-gradient(145deg,#111d35ed,#0b1225ed);border:1px solid var(--line);border-radius:20px;padding:16px;margin:14px 0;box-shadow:0 10px 35px #0002}
-h1,h2,h3,p{margin-top:0}
-h1{font-size:24px;margin-bottom:7px}
-h2{font-size:18px;margin-bottom:12px}
-.muted{color:var(--muted);font-size:13px;line-height:1.6}
-.search-row{display:flex;gap:8px}
-input,select,textarea{width:100%;min-width:0;background:#080f20;color:var(--text);border:1px solid var(--line);border-radius:12px;padding:13px;outline:none}
-input:focus,select:focus,textarea:focus{border-color:var(--cyan)}
-.primary{border:0;border-radius:12px;background:linear-gradient(110deg,#38d8e8,#6b83ff);color:#06101f;font-weight:800;padding:12px 16px}
-.secondary{border:1px solid var(--line);background:#111b31;color:var(--text);border-radius:12px;padding:10px 12px}
-.chips{display:flex;gap:8px;overflow-x:auto;padding:12px 0 3px}
-.chip{white-space:nowrap;border:1px solid var(--line);border-radius:30px;padding:9px 13px;background:#0b1427;color:var(--muted)}
-.chip.active{color:var(--cyan);border-color:var(--cyan);background:#10253a}
-.results-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
-.count{font-size:12px;color:var(--muted)}
-.listing{border:1px solid #263956;background:#0b1427;border-radius:15px;padding:14px;margin-top:10px}
-.listing-top{display:flex;justify-content:space-between;gap:10px}
-.listing h3{font-size:16px;margin:0 0 6px}
-.price{font-size:17px;font-weight:800;color:var(--green);white-space:nowrap}
-.meta{font-size:12px;color:var(--muted);line-height:1.7}
-.listing-actions{display:flex;gap:8px;margin-top:12px}
-.listing-actions button{flex:1}
-.empty{text-align:center;padding:25px 8px;color:var(--muted)}
-.nav{position:fixed;z-index:5;bottom:0;left:0;right:0;background:#080e1bed;backdrop-filter:blur(18px);border-top:1px solid var(--line);display:flex;justify-content:center;gap:4px;padding:9px 7px calc(9px + env(safe-area-inset-bottom))}
-.nav button{flex:1;max-width:150px;border:0;background:transparent;color:var(--muted);padding:9px 3px;border-radius:12px;font-size:12px}
-.nav button.active{color:var(--cyan);background:#162842}
-.page{display:none}.page.active{display:block}
-.form-grid{display:grid;gap:10px}
-.notice{border:1px solid #6b6030;background:#2b2513;color:#f4dca1;border-radius:12px;padding:12px;font-size:12px;line-height:1.6}
-.map-placeholder{height:220px;position:relative;overflow:hidden;border:1px solid var(--line);border-radius:16px;background:radial-gradient(ellipse at center,#17375b,#081021 70%)}
-.map-grid{position:absolute;inset:-40%;background-image:linear-gradient(#4ba6e522 1px,transparent 1px),linear-gradient(90deg,#4ba6e522 1px,transparent 1px);background-size:28px 28px;transform:rotate(-20deg)}
-.map-label{position:absolute;padding:6px 9px;background:#0a1830dd;border:1px solid #3e718c;border-radius:10px;font-size:11px}
-.map-pin{position:absolute;color:var(--cyan);font-size:22px;text-shadow:0 0 12px var(--cyan)}
-.footer{text-align:center;color:#617593;font-size:10px;padding:20px 0}
-@media(min-width:600px){.core-area{height:290px}.core{width:108px;height:108px}.orbit{width:240px;height:240px}.orbit.two{width:195px;height:195px}.orbit.three{width:150px;height:150px}.form-grid.two{grid-template-columns:1fr 1fr}}
+body{
+ margin:0;overflow:hidden;height:100dvh;
+ background:radial-gradient(ellipse at 50% 45%,#10264b,#050a16 65%);
+ color:white;font-family:Arial,sans-serif;
+ touch-action:pan-y;
+}
+#app{height:100%;position:relative;overflow:hidden}
+.map{
+ position:absolute;inset:0;opacity:.23;
+ background-image:
+ linear-gradient(rgba(60,150,255,.13) 1px,transparent 1px),
+ linear-gradient(90deg,rgba(60,150,255,.13) 1px,transparent 1px);
+ background-size:42px 42px;
+}
+.top{
+ position:absolute;top:25px;width:100%;text-align:center;
+ letter-spacing:4px;font-size:12px;color:#80caff;
+}
+.subtitle{
+ margin-top:9px;font-size:9px;letter-spacing:2px;
+ color:#8299bb;
+}
+.status{
+ position:absolute;top:100px;width:100%;
+ text-align:center;font-size:10px;letter-spacing:2px;
+ color:#8ca9ce;
+}
+#core{
+ position:absolute;left:50%;top:51%;
+ transform:translate(-50%,-50%);
+ width:116px;height:116px;border-radius:50%;
+ border:1px solid #65caff;
+ background:radial-gradient(circle at 38% 32%,#b7f4ff,#238ce5 28%,#09285c 65%,#030a1b);
+ box-shadow:0 0 25px #168dff,0 0 65px #0877ff80,inset 0 0 25px #a4eaff80;
+ display:flex;align-items:center;justify-content:center;
+ z-index:5;cursor:pointer;touch-action:none;
+ user-select:none;
+}
+#core:before{
+ content:"";position:absolute;inset:-12px;border-radius:50%;
+ border:1px solid #4db9ff70;
+ animation:pulse 3s infinite;
+}
+#core:after{
+ content:"";position:absolute;inset:-23px;border-radius:50%;
+ border:1px solid #4db9ff30;
+ animation:pulse 3s infinite 1s;
+}
+.core-text{
+ text-align:center;font-size:11px;font-weight:bold;
+ letter-spacing:2px;text-shadow:0 0 12px white;
+ pointer-events:none;
+}
+@keyframes pulse{
+ 0%,100%{transform:scale(.94);opacity:.3}
+ 50%{transform:scale(1.12);opacity:1}
+}
+#menu{position:absolute;inset:0;pointer-events:none;z-index:4}
+.option{
+ position:absolute;left:50%;top:51%;
+ width:88px;min-height:58px;
+ transform:translate(-50%,-50%) scale(.4);
+ opacity:0;pointer-events:none;
+ border:1px solid #397dbb;
+ border-radius:14px;
+ background:linear-gradient(145deg,#10294b,#071326);
+ color:#d8edff;
+ display:flex;flex-direction:column;
+ align-items:center;justify-content:center;gap:5px;
+ font-size:10px;letter-spacing:.5px;
+ box-shadow:0 0 15px #087bff30;
+ transition:opacity .2s,transform .2s,background .2s;
+ cursor:pointer;
+}
+.option .ico{font-size:21px}
+#app.open .option{
+ opacity:1;pointer-events:auto;
+ transform:translate(calc(-50% + var(--x)),calc(-50% + var(--y))) scale(1);
+}
+.option.active{
+ border:1px solid #8ceaff;
+ background:linear-gradient(145deg,#1768a8,#0a2850);
+ box-shadow:0 0 25px #19aaff, inset 0 0 15px #49baff60;
+ color:white;
+ transform:translate(calc(-50% + var(--x)),calc(-50% + var(--y))) scale(1.13)!important;
+}
+#hint{
+ position:absolute;top:calc(51% + 95px);
+ width:100%;text-align:center;
+ font-size:10px;letter-spacing:1px;color:#83a9d2;
+ pointer-events:none;
+}
+#search{
+ position:absolute;bottom:27px;left:6%;width:88%;
+ height:52px;border-radius:30px;
+ border:1px solid #31618d;
+ background:#0a1930eF;
+ display:flex;align-items:center;padding:0 17px;gap:10px;
+ box-shadow:0 0 25px #006eff25;
+}
+#search span{font-size:19px;color:#6fcaff}
+#search input{
+ flex:1;min-width:0;background:none;border:0;outline:0;
+ color:white;font-size:14px;
+}
+#search input::placeholder{color:#8297b4}
+#result{
+ position:absolute;inset:0;background:#050b18;
+ z-index:10;display:none;padding:30px 22px;
+}
+#result.show{display:block}
+#result h2{color:#75caff;font-size:23px}
+#result p{color:#a9bed8;line-height:1.6}
+.back{
+ border:1px solid #398ac7;background:#10294a;color:white;
+ padding:12px 20px;border-radius:20px;margin-top:20px;
+}
+#close{
+ position:absolute;top:24px;right:22px;
+ color:#8fcfff;background:none;border:0;font-size:23px;
+ display:none;z-index:8;
+}
+#app.open #close{display:block}
 </style>
 </head>
 <body>
-<div class="app">
-<header class="topbar">
-  <div>
-    <div class="brand">WORLD <span>FIND</span></div>
-    <div class="subtitle">Живое ядро · Единая система поиска</div>
-  </div>
-  <div class="status">● DEMO MODE</div>
-</header>
+<div id="app">
+ <div class="map"></div>
 
-<section class="core-area" aria-label="Анимированное ядро">
-  <div class="orbit"><i class="orbit-dot"></i></div>
-  <div class="orbit two"></div>
-  <div class="orbit three"></div>
-  <button class="core" id="coreBtn" aria-label="Открыть быстрые действия"></button>
-  <div class="core-caption">ONE PLANET · MANY POSSIBILITIES</div>
-</section>
+ <header class="top">
+  WORLD FIND
+  <div class="subtitle">ONE PLANET · MANY POSSIBILITIES</div>
+ </header>
 
-<main>
-<section class="page active" id="homePage">
-  <div class="panel">
-    <h1>Найди нужное в своём мире</h1>
-    <p class="muted">Товары, услуги, работа, аренда и возможности рядом с тобой.</p>
-    <div class="search-row">
-      <input id="query" placeholder="Например: курица, ремонт, работа..." autocomplete="off">
-      <button class="primary" id="searchBtn">Найти</button>
-    </div>
-    <div style="margin-top:10px">
-      <select id="city">
-        <option>Ош</option><option>Бишкек</option><option>Джалал-Абад</option><option>Каракол</option><option>Нарын</option><option>Талас</option><option>Баткен</option><option>Все города</option>
-      </select>
-    </div>
-    <div class="chips" id="categoryChips">
-      <button class="chip active" data-category="Все">Все</button>
-      <button class="chip" data-category="Товары">Товары</button>
-      <button class="chip" data-category="Услуги">Услуги</button>
-      <button class="chip" data-category="Работа">Работа</button>
-      <button class="chip" data-category="Аренда">Аренда</button>
-    </div>
-  </div>
-  <div class="results-head"><h2>Обнаруженные возможности</h2><span class="count" id="resultCount"></span></div>
-  <div id="results"></div>
-  <p class="footer">ИССЛЕДУЙ · ИЩИ · ОТКРЫВАЙ</p>
-</section>
+ <div class="status" id="status">СИСТЕМА АКТИВНА</div>
 
-<section class="page" id="explorePage">
-  <div class="panel">
-    <h1>Исследовать мир</h1>
-    <p class="muted">Демонстрационная карта для будущей системы мест, продавцов и заказов.</p>
-    <div class="map-placeholder">
-      <div class="map-grid"></div>
-      <span class="map-pin" style="top:35%;left:30%">⌖</span>
-      <span class="map-pin" style="top:58%;left:65%">⌖</span>
-      <span class="map-pin" style="top:25%;left:75%">⌖</span>
-      <span class="map-label" style="top:38%;left:35%">Ош · демо-точка</span>
-      <span class="map-label" style="top:63%;left:35%">Места появятся здесь</span>
-    </div>
-    <p class="muted" style="margin-top:12px">Реальные карты, координаты и местоположение пока не подключены.</p>
-    <button class="primary" id="goSearch">Искать места</button>
-  </div>
-  <div class="panel">
-    <h2>Что будет доступно</h2>
-    <p>📍 Магазины и товары</p><p>🛠 Услуги и специалисты</p><p>🧰 Работа и задания</p><p>🏠 Аренда и помещения</p><p>🚚 Заказы и доставка</p>
-  </div>
-</section>
+ <div id="menu">
+  <button class="option" data-name="Карта" data-icon="🌍"><span class="ico">🌍</span>КАРТА</button>
+  <button class="option" data-name="Поиск" data-icon="🔎"><span class="ico">🔎</span>ПОИСК</button>
+  <button class="option" data-name="Товары" data-icon="🛍️"><span class="ico">🛍️</span>ТОВАРЫ</button>
+  <button class="option" data-name="Услуги" data-icon="🛠️"><span class="ico">🛠️</span>УСЛУГИ</button>
+  <button class="option" data-name="Работа" data-icon="💼"><span class="ico">💼</span>РАБОТА</button>
+  <button class="option" data-name="Общение" data-icon="💬"><span class="ico">💬</span>ОБЩЕНИЕ</button>
+  <button class="option" data-name="Доставка" data-icon="🚚"><span class="ico">🚚</span>ДОСТАВКА</button>
+  <button class="option" data-name="Профиль" data-icon="👤"><span class="ico">👤</span>ПРОФИЛЬ</button>
+ </div>
 
-<section class="page" id="publishPage">
-  <div class="panel">
-    <h1>Разместить объявление</h1>
-    <p class="muted">Добавь предложение в локальную демоверсию.</p>
-    <form id="publishForm" class="form-grid">
-      <input id="itemTitle" placeholder="Название предложения" required maxlength="80">
-      <div class="form-grid two">
-        <select id="itemCategory"><option>Товары</option><option>Услуги</option><option>Работа</option><option>Аренда</option></select>
-        <input id="itemPrice" placeholder="Цена, например 500 сом" required maxlength="40">
-      </div>
-      <select id="itemCity"><option>Ош</option><option>Бишкек</option><option>Джалал-Абад</option><option>Каракол</option><option>Нарын</option><option>Талас</option><option>Баткен</option></select>
-      <textarea id="itemDescription" placeholder="Описание, условия, доступность" rows="3" maxlength="500"></textarea>
-      <button class="primary" type="submit">Опубликовать в демо</button>
-    </form>
-    <div class="notice" style="margin-top:14px">Важно: объявление сохраняется только в памяти открытой страницы. Оно не отправляется на сервер и не видно другим людям. После перезагрузки страницы демо-объявление исчезнет.</div>
-  </div>
-</section>
+ <button id="core" aria-label="Открыть меню">
+  <span class="core-text">WORLD<br>CORE</span>
+ </button>
 
-<section class="page" id="profilePage">
-  <div class="panel">
-    <h1>Профиль</h1>
-    <p style="font-size:40px;margin-bottom:5px">◉</p>
-    <h2>Гость WORLD FIND</h2>
-    <p class="muted">Сейчас это демонстрационный режим без регистрации.</p>
-    <div class="notice">Следующий этап: аккаунты, подтверждение контактов, сохранённые объявления и личные заказы через сервер.</div>
-  </div>
-  <div class="panel">
-    <h2>Состояние системы</h2>
-    <p class="meta">Интерфейс: активен</p>
-    <p class="meta">Демо-поиск: активен</p>
-    <p class="meta">Общая база данных: не подключена</p>
-    <p class="meta">Реальная доставка: не подключена</p>
-  </div>
-</section>
-</main>
+ <div id="hint">УДЕРЖИВАЙ ЯДРО И ВЫБЕРИ НАПРАВЛЕНИЕ</div>
+ <button id="close">✕</button>
+
+ <div id="search">
+  <span>⌕</span>
+  <input id="query" placeholder="Что ты ищешь в этом мире?">
+ </div>
+
+ <section id="result">
+  <button class="back" onclick="goHome()">← Назад к ядру</button>
+  <h2 id="resultTitle">КАРТА</h2>
+  <p id="resultText">Пространство выбранной функции WORLD FIND.</p>
+ </section>
 </div>
 
-<nav class="nav">
-  <button class="active" data-page="homePage">⌕<br>Поиск</button>
-  <button data-page="explorePage">◎<br>Исследовать</button>
-  <button data-page="publishPage">＋<br>Разместить</button>
-  <button data-page="profilePage">◉<br>Профиль</button>
-</nav>
-
 <script>
-(function(){
-"use strict";
-const items=[
-{id:1,title:"Бананы",category:"Товары",price:"120 сом/кг",city:"Ош",description:"Демо-предложение фруктов"},
-{id:2,title:"Домашние яблоки",category:"Товары",price:"90 сом/кг",city:"Ош",description:"Демо-предложение фруктов"},
-{id:3,title:"Ремонт телефона",category:"Услуги",price:"от 500 сом",city:"Ош",description:"Диагностика и ремонт — демо"},
-{id:4,title:"Настольная лампа",category:"Товары",price:"1 200 сом",city:"Бишкек",description:"Демонстрационное объявление"},
-{id:5,title:"Сумка",category:"Товары",price:"850 сом",city:"Бишкек",description:"Демонстрационное объявление"},
-{id:6,title:"Помощник на день",category:"Работа",price:"1 500 сом/день",city:"Ош",description:"Демо-предложение работы"},
-{id:7,title:"Комната в аренду",category:"Аренда",price:"8 000 сом/месяц",city:"Ош",description:"Демо-объявление об аренде"}
-];
-let category="Все";
-let nextId=8;
-const $=id=>document.getElementById(id);
-const safe=value=>String(value).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-function render(){
- const q=$("query").value.trim().toLocaleLowerCase("ru");
- const city=$("city").value;
- const filtered=items.filter(item=>
- (category==="Все"||item.category===category)&&
- (city==="Все города"||item.city===city)&&
- (!q||(item.title+" "+item.category+" "+item.city+" "+item.description+" "+item.price).toLocaleLowerCase("ru").includes(q))
- );
- $("resultCount").textContent=filtered.length+" найдено";
- if(!filtered.length){
-  $("results").innerHTML='<div class="panel empty">Пока ничего не найдено.<br>Попробуй другое слово, категорию или город.</div>';
-  return;
- }
- $("results").innerHTML=filtered.map(item=>`
- <article class="listing">
-  <div class="listing-top"><div><h3>${safe(item.title)}</h3><div class="meta">${safe(item.category)} · ${safe(item.city)}</div></div><div class="price">${safe(item.price)}</div></div>
-  <p class="muted" style="margin:10px 0 0">${safe(item.description||"Описание не добавлено")}</p>
-  <div class="listing-actions"><button class="secondary" data-details="${item.id}">Подробнее</button><button class="primary" data-contact="${item.id}">Связаться</button></div>
- </article>`).join("");
-}
-function showPage(id){
- document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id===id));
- document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===id));
- window.scrollTo({top:0,behavior:"smooth"});
- if(id==="homePage")render();
-}
-document.querySelectorAll(".nav button").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.page)));
-document.querySelectorAll(".chip").forEach(b=>b.addEventListener("click",()=>{
- category=b.dataset.category;
- document.querySelectorAll(".chip").forEach(c=>c.classList.toggle("active",c===b));
- render();
-}));
-$("searchBtn").addEventListener("click",render);
-$("query").addEventListener("keydown",e=>{if(e.key==="Enter")render()});
-$("city").addEventListener("change",render);
-$("goSearch").addEventListener("click",()=>showPage("homePage"));
-$("coreBtn").addEventListener("click",()=>{
- const choice=prompt("Быстрый переход:\n1 — Поиск\n2 — Исследовать\n3 — Разместить\n4 — Профиль");
- const pages={"1":"homePage","2":"explorePage","3":"publishPage","4":"profilePage"};
- if(pages[choice])showPage(pages[choice]);
-});
-$("publishForm").addEventListener("submit",e=>{
- e.preventDefault();
- const title=$("itemTitle").value.trim();
- const price=$("itemPrice").value.trim();
- if(!title||!price)return;
- items.unshift({
-  id:nextId++,title,price,category:$("itemCategory").value,
-  city:$("itemCity").value,
-  description:$("itemDescription").value.trim()||"Описание не добавлено"
+const app=document.getElementById("app");
+const core=document.getElementById("core");
+const options=[...document.querySelectorAll(".option")];
+const hint=document.getElementById("hint");
+const status=document.getElementById("status");
+const result=document.getElementById("result");
+const resultTitle=document.getElementById("resultTitle");
+const resultText=document.getElementById("resultText");
+const closeBtn=document.getElementById("close");
+
+let selected=null;
+let opened=false;
+let startX=0,startY=0;
+let moved=false;
+let pointerDown=false;
+
+function arrange(){
+ const radius=Math.min(window.innerWidth*.34,145);
+ options.forEach((el,i)=>{
+  const angle=(-90+i*45)*Math.PI/180;
+  el.style.setProperty("--x",(Math.cos(angle)*radius)+"px");
+  el.style.setProperty("--y",(Math.sin(angle)*radius)+"px");
  });
- $("query").value="";
- $("city").value="Все города";
- category="Все";
- document.querySelectorAll(".chip").forEach(c=>c.classList.toggle("active",c.dataset.category==="Все"));
- $("publishForm").reset();
- showPage("homePage");
- alert("Добавлено в демоверсию. Пока объявление не опубликовано в интернете для других пользователей.");
-});
-$("results").addEventListener("click",e=>{
- const details=e.target.closest("[data-details]");
- const contact=e.target.closest("[data-contact]");
- if(details){
-  const item=items.find(i=>i.id===Number(details.dataset.details));
-  if(item)alert(item.title+"\nКатегория: "+item.category+"\nГород: "+item.city+"\nЦена: "+item.price+"\n\n"+item.description+"\n\nДемо-режим: продавец пока не подключён.");
+}
+arrange();
+window.addEventListener("resize",arrange);
+
+function openMenu(){
+ opened=true;
+ app.classList.add("open");
+ hint.textContent="ПЕРЕМЕЩАЙ ПАЛЕЦ К НУЖНОЙ ФУНКЦИИ";
+ status.textContent="ВЫБЕРИ НАПРАВЛЕНИЕ";
+}
+function closeMenu(){
+ opened=false;
+ app.classList.remove("open");
+ options.forEach(o=>o.classList.remove("active"));
+ selected=null;
+ hint.textContent="УДЕРЖИВАЙ ЯДРО И ВЫБЕРИ НАПРАВЛЕНИЕ";
+ status.textContent="СИСТЕМА АКТИВНА";
+}
+function choose(el){
+ const name=el.dataset.name;
+ resultTitle.textContent=name.toUpperCase();
+ resultText.textContent="Раздел «"+name+"» выбран. Здесь будет размещена полноценная функция WORLD FIND. Сейчас это демонстрационная область.";
+ result.classList.add("show");
+ closeMenu();
+}
+function highlight(el){
+ options.forEach(o=>o.classList.toggle("active",o===el));
+ selected=el;
+ if(el){
+  status.textContent="ВЫБРАНО: "+el.dataset.name.toUpperCase();
+  hint.textContent="ОТПУСТИ ПАЛЕЦ, ЧТОБЫ ОТКРЫТЬ";
+ }else{
+  status.textContent="ВЫБЕРИ НАПРАВЛЕНИЕ";
+  hint.textContent="ПЕРЕМЕЩАЙ ПАЛЕЦ К НУЖНОЙ ФУНКЦИИ";
  }
- if(contact){
-  const item=items.find(i=>i.id===Number(contact.dataset.contact));
-  if(item)alert("Связь с продавцом ещё не подключена.\n\nWORLD FIND пока работает как прототип без серверной базы и реальных аккаунтов.");
+}
+function findOption(x,y){
+ const cx=window.innerWidth/2;
+ const cy=window.innerHeight*.51;
+ const dx=x-cx,dy=y-cy;
+ const distance=Math.hypot(dx,dy);
+ if(distance<48||distance>Math.min(window.innerWidth*.48,205))return null;
+ let angle=Math.atan2(dy,dx)*180/Math.PI;
+ if(angle< -90)angle+=360;
+ let index=Math.round((angle+90)/45)%8;
+ return options[index];
+}
+
+core.addEventListener("pointerdown",e=>{
+ e.preventDefault();
+ pointerDown=true;
+ moved=false;
+ startX=e.clientX;
+ startY=e.clientY;
+ openMenu();
+ core.setPointerCapture(e.pointerId);
+});
+core.addEventListener("pointermove",e=>{
+ if(!pointerDown)return;
+ const distance=Math.hypot(e.clientX-startX,e.clientY-startY);
+ if(distance>18)moved=true;
+ if(moved)highlight(findOption(e.clientX,e.clientY));
+});
+core.addEventListener("pointerup",e=>{
+ if(!pointerDown)return;
+ pointerDown=false;
+ if(selected){
+  choose(selected);
+ }else{
+  hint.textContent="ПРОВЕДИ ПАЛЬЦЕМ ОТ ЯДРА К НУЖНОМУ НАПРАВЛЕНИЮ";
  }
 });
-render();
-})();
+core.addEventListener("pointercancel",()=>{
+ pointerDown=false;
+ if(!selected)closeMenu();
+});
+
+options.forEach(el=>{
+ el.addEventListener("click",()=>choose(el));
+});
+closeBtn.addEventListener("click",closeMenu);
+
+function goHome(){
+ result.classList.remove("show");
+ closeMenu();
+}
+window.goHome=goHome;
+
+document.getElementById("query").addEventListener("keydown",e=>{
+ if(e.key==="Enter"){
+  const value=e.target.value.trim();
+  if(!value)return;
+  resultTitle.textContent="ПОИСК";
+  resultText.textContent='Запрос: "'+value+'". В этой версии поиск пока демонстрационный. Позже подключим настоящую базу предложений.';
+  result.classList.add("show");
+ }
+});
 </script>
 </body>
 </html>
