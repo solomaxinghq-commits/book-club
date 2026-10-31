@@ -4,515 +4,313 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="theme-color" content="#050916">
-<title>WORLD FIND 4.0 — Living Core</title>
-
+<meta name="theme-color" content="#050817">
+<title>WORLD FIND 4.1 — Живые пространства</title>
 <style>
 *{box-sizing:border-box}
+:root{--accent:#55dfff}
 body{
- margin:0;height:100dvh;overflow:hidden;
- background:#050916;color:white;
- font-family:Arial,sans-serif;
- touch-action:pan-y;
-}
-button,input{font:inherit}
-button{color:inherit}
-#app{
- position:relative;width:100%;height:100%;
- overflow:hidden;
- background:radial-gradient(ellipse at 50% 40%,#142d53,#050916 75%);
+ margin:0;background:#050817;color:white;
+ font-family:Arial,sans-serif;height:100dvh;
+ overflow:hidden;user-select:none;
 }
 #scene{
- position:absolute;inset:0;
- background:linear-gradient(160deg,#102d50,#071327 55%,#030814);
- transition:background 1s ease;
-}
-#scene:before{
- content:"";position:absolute;inset:0;
- background-image:
- linear-gradient(#70baff0c 1px,transparent 1px),
- linear-gradient(90deg,#70baff0c 1px,transparent 1px);
- background-size:45px 45px;
- mask-image:linear-gradient(transparent,#000 25%,#000 80%,transparent);
+ position:fixed;inset:0;z-index:0;
+ background:#071326 center/cover no-repeat;
+ transition:background-image .5s ease;
 }
 #scene:after{
  content:"";position:absolute;inset:0;
- background:radial-gradient(ellipse at 50% 50%,transparent 20%,#020713aa 100%);
- pointer-events:none;
+ background:linear-gradient(180deg,rgba(3,7,20,.35),rgba(3,7,20,.45) 45%,#030715 100%);
 }
-#scene.mapspace{
- background:
- radial-gradient(ellipse at 45% 40%,#174b70,#07182e 65%,#030814);
+#shade{
+ position:fixed;inset:0;z-index:1;pointer-events:none;
+ background:radial-gradient(circle at center,transparent,rgba(0,0,0,.2));
 }
-#scene.market{
- background:
- radial-gradient(ellipse at 70% 30%,#59402d,#201b25 60%,#090d19);
+header{
+ position:absolute;z-index:5;top:15px;left:15px;right:15px;
+ display:flex;justify-content:space-between;align-items:center;
 }
-#scene.service{
- background:
- radial-gradient(ellipse at 30% 35%,#174b4e,#0a1b29 65%,#030814);
+.controls{display:flex;gap:9px}
+.control{
+ border:1px solid #ffffff35;background:#08172bbd;
+ color:white;border-radius:18px;padding:11px 14px;
+ backdrop-filter:blur(15px);font-size:17px;
 }
-#scene.work{
- background:
- radial-gradient(ellipse at 50% 25%,#39305c,#11152e 65%,#030814);
+#placeName{
+ position:absolute;z-index:3;top:75px;left:0;right:0;
+ text-align:center;font-size:12px;letter-spacing:4px;
+ color:#bceeff;text-transform:uppercase;
 }
-#scene.community{
- background:
- radial-gradient(ellipse at 50% 40%,#23436a,#101a37 65%,#030814);
-}
-#scene.delivery{
- background:
- radial-gradient(ellipse at 60% 30%,#5a392b,#1c1b2a 65%,#030814);
-}
-#scene.profile{
- background:
- radial-gradient(ellipse at 50% 30%,#264b61,#101a2b 65%,#030814);
-}
-#scene.searchspace{
- background:
- radial-gradient(ellipse at 50% 30%,#173f6c,#09162b 65%,#030814);
-}
-
-/* Верхняя панель */
-.topbar{
- position:absolute;top:20px;left:17px;right:17px;
- display:flex;align-items:center;justify-content:space-between;
- z-index:20;
-}
-.top-left,.top-right{display:flex;gap:10px;align-items:center}
-.topbtn{
- width:42px;height:42px;border-radius:50%;
- border:1px solid #75bfff55;
- background:#0b1b31c9;
- box-shadow:0 0 18px #168cff20;
+#coreArea{
+ position:absolute;z-index:4;left:50%;top:49%;
+ transform:translate(-50%,-50%);
+ width:280px;height:280px;
  display:grid;place-items:center;
- font-size:18px;cursor:pointer;
 }
-.brand{
- position:absolute;left:50%;transform:translateX(-50%);
- text-align:center;pointer-events:none;
- letter-spacing:3px;font-size:12px;color:#b6e5ff;
- white-space:nowrap;
-}
-.brand small{
- display:block;margin-top:5px;font-size:8px;
- color:#829fbe;letter-spacing:2px;
-}
-#locationLabel{
- position:absolute;top:76px;right:20px;
- color:#9acbfa;font-size:10px;letter-spacing:1px;
- z-index:5;
-}
-
-/* Центральная площадка */
 #anchor{
- position:absolute;left:50%;top:49%;
- transform:translate(-50%,-50%);
- width:145px;height:145px;border-radius:50%;
- border:1px solid #56baff40;
- background:radial-gradient(circle,#42aaff12 0%,#1b70bc0d 45%,transparent 70%);
- box-shadow:0 0 35px #168bff19,inset 0 0 30px #168bff18;
- display:grid;place-items:center;
- cursor:pointer;z-index:3;
+ position:absolute;width:230px;height:230px;border-radius:50%;
+ border:1px dashed #69dfff60;
+ box-shadow:0 0 50px #32caff22,inset 0 0 50px #32caff12;
 }
-#anchor:before{
- content:"";position:absolute;inset:17px;
- border:1px dashed #74caff45;border-radius:50%;
- animation:spin 22s linear infinite;
+#anchor:before,#anchor:after{
+ content:"";position:absolute;border:1px solid #7de7ff25;
+ border-radius:50%;inset:22px;
 }
-#anchor:after{
- content:"";position:absolute;inset:35px;
- border:1px solid #6ccaff35;border-radius:50%;
- box-shadow:0 0 20px #178cff25;
-}
-.anchorText{
- z-index:2;font-size:9px;letter-spacing:2px;
- color:#83cfff;text-align:center;
- text-shadow:0 0 12px #159dff;
-}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-/* Живое ядро */
+#anchor:after{inset:45px}
 #core{
- position:absolute;left:50%;top:49%;
- width:90px;height:90px;border-radius:50%;
- transform:translate(-50%,-50%);
- border:1px solid #9cecff;
- background:radial-gradient(circle at 35% 28%,#d5fbff,#45b8ff 22%,#1261b4 53%,#04132e 82%);
- box-shadow:0 0 22px #1eabff,0 0 55px #087aff99,
- inset 0 0 22px #b8efff90;
- z-index:8;display:grid;place-items:center;
- user-select:none;touch-action:none;
- cursor:grab;
+ width:105px;height:105px;border-radius:50%;
+ position:relative;z-index:3;
+ background:radial-gradient(circle at 35% 30%,#fff,#6deaff 15%,#168bda 42%,#071b53 75%);
+ box-shadow:0 0 25px #40dfff,0 0 65px #168bff,0 0 120px #168bff55;
+ border:1px solid #b7f7ff;
+ touch-action:none;
+ transition:transform .2s;
 }
 #core:before{
- content:"";position:absolute;inset:-10px;
- border:1px solid #7ad8ff88;border-radius:50%;
- animation:pulse 2.8s infinite;
+ content:"";position:absolute;inset:-13px;border-radius:50%;
+ border:1px solid #75eaff75;animation:pulse 2.5s infinite;
 }
 #core:after{
- content:"";position:absolute;inset:-20px;
- border:1px solid #5dbdff35;border-radius:50%;
- animation:pulse 2.8s infinite 1s;
+ content:"";position:absolute;inset:-28px;border-radius:50%;
+ border:1px solid #75eaff30;animation:pulse 3.5s infinite;
 }
-.coreText{
- font-size:10px;font-weight:bold;
- letter-spacing:2px;text-align:center;
- pointer-events:none;text-shadow:0 0 10px white;
-}
-@keyframes pulse{
- 50%{transform:scale(1.13);opacity:.35}
-}
-
-/* Движение ядра по экрану */
-#core.roaming{
- animation:roam 13s ease-in-out infinite alternate;
-}
-@keyframes roam{
- 0%{left:50%;top:25%}
- 25%{left:75%;top:38%}
- 50%{left:60%;top:70%}
- 75%{left:25%;top:62%}
- 100%{left:35%;top:30%}
-}
-#core.centered{
- animation:none!important;
- left:50%;top:49%;
- transition:left .35s,top .35s;
-}
-
-/* Меню направлений */
-#menu{position:absolute;inset:0;z-index:7;pointer-events:none}
-.option{
- position:absolute;left:50%;top:49%;
- width:83px;height:67px;
- transform:translate(-50%,-50%) scale(.4);
- opacity:0;pointer-events:none;
- display:flex;align-items:center;justify-content:center;
- flex-direction:column;gap:5px;
- background:#0a1c33eF;
- border:1px solid #3f8fc4;
- border-radius:17px;
- box-shadow:0 0 20px #168cff30;
- color:#cdeaff;font-size:9px;letter-spacing:1px;
- transition:opacity .2s,transform .2s,background .2s;
-}
-.option .ico{font-size:22px}
-#app.open .option{
- opacity:1;pointer-events:auto;
- transform:translate(calc(-50% + var(--x)),calc(-50% + var(--y))) scale(1);
-}
-.option.active{
- background:#15528b;
- border-color:#a2eaff;
- color:white;
- box-shadow:0 0 28px #25aaff;
- transform:translate(calc(-50% + var(--x)),calc(-50% + var(--y))) scale(1.15)!important;
-}
+@keyframes pulse{50%{transform:scale(1.18);opacity:.2}}
 #hint{
- position:absolute;top:calc(49% + 103px);
- width:100%;text-align:center;
- color:#85afd6;font-size:9px;
- letter-spacing:1.5px;z-index:4;
+ position:absolute;top:calc(50% + 155px);left:0;right:0;
+ text-align:center;color:#b9d9ee;font-size:11px;letter-spacing:2px;
 }
-
-/* Поиск снизу */
-#searchbar{
- position:absolute;bottom:24px;left:5%;width:90%;
- height:54px;border-radius:30px;
- border:1px solid #4b8ec0;
- background:#091a30ed;
- display:flex;align-items:center;gap:11px;
- padding:0 18px;z-index:15;
- box-shadow:0 0 24px #168cff25;
+#menu{
+ position:absolute;inset:0;pointer-events:none;
 }
-#searchbar .glass{font-size:21px;color:#76caff}
-#query{
- width:100%;min-width:0;background:none;border:0;
- outline:none;color:white;font-size:13px;
+.option{
+ position:absolute;pointer-events:auto;
+ transform:translate(-50%,-50%);
+ min-width:91px;text-align:center;
+ padding:12px 9px;border-radius:18px;
+ border:1px solid #9beaff55;
+ background:#07172bdc;backdrop-filter:blur(12px);
+ box-shadow:0 0 25px #25baff25;
+ font-size:12px;color:white;
+ opacity:0;scale:.7;transition:.2s;
 }
-#query::placeholder{color:#839bb9}
-
-/* Всплывающие меню */
-.popup{
- display:none;position:absolute;z-index:30;
- top:72px;left:17px;
- width:210px;padding:12px;
- border:1px solid #4d94c4;
- border-radius:16px;background:#09172bf5;
- box-shadow:0 12px 35px #0009;
+#menu.active .option{opacity:1;scale:1}
+.option.selected{
+ background:#0d8fbd;color:white;
+ border-color:#aaf5ff;
+ box-shadow:0 0 30px #35dfff;
 }
-.popup.show{display:block}
-.popup button{
- width:100%;text-align:left;padding:12px;
- border:0;border-radius:9px;background:transparent;
- color:#d9edff;font-size:12px;
+.option b{display:block;font-size:22px;margin-bottom:5px}
+#search{
+ position:absolute;z-index:6;bottom:22px;left:15px;right:15px;
+ display:flex;gap:8px;
 }
-.popup button:active{background:#16416b}
-.popupTitle{
- padding:7px 10px;color:#76caff;
- font-size:10px;letter-spacing:2px;
+#search input{
+ flex:1;min-width:0;border:1px solid #ffffff35;
+ background:#07172bdc;color:white;border-radius:25px;
+ padding:16px 18px;font-size:14px;outline:none;
+ backdrop-filter:blur(15px);
 }
-#locationPopup{left:auto;right:17px}
-
-/* Раздел */
-#space{
- display:none;position:absolute;inset:0;z-index:25;
- padding:110px 22px 100px;
- overflow:auto;background:#071326eF;
+#search button{
+ border:0;border-radius:50%;width:52px;
+ background:#159ed0;color:white;font-size:20px;
 }
-#space.show{display:block}
-#space h1{
- font-size:27px;letter-spacing:1px;
- color:#a6e1ff;margin:15px 0;
+#panel{
+ position:absolute;z-index:8;inset:0;
+ display:none;background:#06101bea;
+ backdrop-filter:blur(18px);padding:85px 22px 90px;
+ overflow:auto;
 }
-#space p{color:#b3c9df;font-size:13px;line-height:1.6}
-.spaceCard{
- margin-top:18px;padding:17px;
- border:1px solid #4684b4;
- border-radius:18px;background:#102440b9;
+#panel h2{font-size:27px}
+#panel p{color:#c4d8e9;line-height:1.6}
+#panel button{
+ background:#123452;color:white;border:1px solid #5edbff55;
+ border-radius:14px;padding:13px 17px;margin:5px;
 }
-.spaceCard h3{font-size:14px;color:#c9eaff}
-.spaceCard p{font-size:12px}
-.back{
- padding:12px 19px;border-radius:22px;
- border:1px solid #65bfff;background:#102b4b;
+#panel .back{position:absolute;top:20px;left:20px}
+#status{
+ position:absolute;z-index:3;bottom:90px;left:0;right:0;
+ text-align:center;color:#a9d9ed;font-size:10px;letter-spacing:3px;
 }
-#spaceClose{
- position:absolute;right:20px;top:24px;
- z-index:27;display:none;
-}
-#space.show~#spaceClose{display:block}
-#app.inspace #spaceClose{display:block}
-#app.inspace #searchbar{display:none}
 </style>
 </head>
-
 <body>
-<div id="app">
- <div id="scene"></div>
+<div id="scene"></div>
+<div id="shade"></div>
 
- <div class="topbar">
-  <div class="top-left">
-   <button class="topbtn" id="soundBtn">♫</button>
-   <button class="topbtn" id="moreBtn">⋯</button>
-  </div>
-
-  <div class="brand">
-   WORLD FIND
-   <small>ЖИВОЕ ЯДРО · 4.0</small>
-  </div>
-
-  <div class="top-right">
-   <button class="topbtn" id="locationBtn">◎</button>
-  </div>
+<header>
+ <div class="controls">
+  <button class="control" id="sound">♫</button>
+  <button class="control" id="more">⋯</button>
  </div>
+ <button class="control" id="location">📍 Ош</button>
+</header>
 
- <div id="locationLabel">⌖ ОШ · КЫРГЫЗСТАН</div>
+<div id="placeName">WORLD FIND · ЖИВОЕ ЯДРО</div>
 
- <div id="morePopup" class="popup">
-  <div class="popupTitle">ДОПОЛНИТЕЛЬНО</div>
-  <button onclick="showNotice('Настройки интерфейса')">⚙ Настройки интерфейса</button>
-  <button onclick="showNotice('Уведомления')">♧ Уведомления</button>
-  <button onclick="showNotice('Помощь')">? Помощь</button>
-  <button onclick="showNotice('О системе WORLD FIND')">◈ О системе</button>
- </div>
+<div id="coreArea">
+ <div id="anchor"></div>
+ <div id="core"></div>
+ <div id="menu"></div>
+</div>
 
- <div id="locationPopup" class="popup">
-  <div class="popupTitle">МЕСТОПОЛОЖЕНИЕ</div>
-  <button onclick="setLocation('Ош · Кыргызстан')">⌖ Ош</button>
-  <button onclick="setLocation('Бишкек · Кыргызстан')">⌖ Бишкек</button>
-  <button onclick="setLocation('Весь мир')">🌍 Весь мир</button>
-  <button onclick="showNotice('Для определения GPS потребуется разрешение устройства')">◎ Моё местоположение</button>
- </div>
+<div id="hint">КОСНИСЬ ЯДРА И ВЫБЕРИ НАПРАВЛЕНИЕ</div>
+<div id="status">ONE PLANET · MANY POSSIBILITIES</div>
 
- <button id="anchor">
-  <span class="anchorText">ВЕРНУТЬ<br>ЯДРО</span>
- </button>
+<div id="search">
+ <input id="searchInput" placeholder="Найти что угодно в мире...">
+ <button id="searchButton">⌕</button>
+</div>
 
- <div id="menu">
-  <button class="option" data-name="Карта" data-bg="mapspace"><span class="ico">🌍</span>КАРТА</button>
-  <button class="option" data-name="Поиск" data-bg="searchspace"><span class="ico">⌕</span>ПОИСК</button>
-  <button class="option" data-name="Товары" data-bg="market"><span class="ico">◇</span>ТОВАРЫ</button>
-  <button class="option" data-name="Услуги" data-bg="service"><span class="ico">⚒</span>УСЛУГИ</button>
-  <button class="option" data-name="Работа" data-bg="work"><span class="ico">▣</span>РАБОТА</button>
-  <button class="option" data-name="Общение" data-bg="community"><span class="ico">◉</span>ОБЩЕНИЕ</button>
-  <button class="option" data-name="Доставка" data-bg="delivery"><span class="ico">➤</span>ДОСТАВКА</button>
-  <button class="option" data-name="Профиль" data-bg="profile"><span class="ico">♙</span>ПРОФИЛЬ</button>
- </div>
-
- <div id="core" class="roaming">
-  <span class="coreText">WORLD<br>CORE</span>
- </div>
-
- <div id="hint">НАЖМИ НА ЦЕНТРАЛЬНУЮ ПЛОЩАДКУ</div>
-
- <div id="searchbar">
-  <span class="glass">⌕</span>
-  <input id="query" placeholder="Что ты ищешь в этом мире?">
- </div>
-
- <section id="space">
-  <button class="back" onclick="goHome()">← Назад к ядру</button>
-  <h1 id="spaceTitle">КАРТА</h1>
-  <p id="spaceDescription"></p>
-  <div class="spaceCard">
-   <h3 id="spaceCardTitle">Пространство WORLD FIND</h3>
-   <p>Это основа будущего раздела. Здесь появятся его собственные инструменты, изображения, данные и функции.</p>
-  </div>
- </section>
- <button class="topbtn" id="spaceClose" onclick="goHome()">✕</button>
+<div id="panel">
+ <button class="back" id="back">← Назад</button>
+ <h2 id="panelTitle"></h2>
+ <p id="panelText"></p>
+ <div id="panelContent"></div>
 </div>
 
 <script>
-const app=document.getElementById("app");
-const core=document.getElementById("core");
-const anchor=document.getElementById("anchor");
-const options=[...document.querySelectorAll(".option")];
+const spaces=[
+ {id:"map",name:"Карта мира",icon:"🌍",image:"https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1600&q=85",text:"Исследуй города, страны, места и маршруты."},
+ {id:"market",name:"Товары и магазины",icon:"🛍️",image:"https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1600&q=85",text:"Находи товары, магазины, цены и доступность."},
+ {id:"services",name:"Услуги",icon:"🛠️",image:"https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=1600&q=85",text:"Специалисты, компании и услуги рядом."},
+ {id:"work",name:"Работа и задания",icon:"💼",image:"https://images.unsplash.com/photo-1497366216548-37526070297c?w=1600&q=85",text:"Работа, проекты, заказы и возможности."},
+ {id:"learn",name:"Обучение",icon:"🎓",image:"https://images.unsplash.com/photo-1509062522246-3755977927d7?w=1600&q=85",text:"Обучение, знания, курсы и развитие."},
+ {id:"community",name:"Сообщества",icon:"👥",image:"https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1600&q=85",text:"Люди, города, общение и совместные инициативы."},
+ {id:"delivery",name:"Доставка",icon:"🚚",image:"https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1600&q=85",text:"Заказы, доставка и отслеживание."},
+ {id:"profile",name:"Профиль",icon:"👤",image:"https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1600&q=85",text:"Твой профиль и личные настройки."}
+];
+
 const scene=document.getElementById("scene");
+const core=document.getElementById("core");
+const menu=document.getElementById("menu");
+const panel=document.getElementById("panel");
+const title=document.getElementById("panelTitle");
+const description=document.getElementById("panelText");
+const content=document.getElementById("panelContent");
+const placeName=document.getElementById("placeName");
 const hint=document.getElementById("hint");
-const space=document.getElementById("space");
 
-let selected=null;
+let active=false;
+let selected=-1;
+let currentSpace=null;
 let pointerDown=false;
-let startX=0,startY=0;
-let soundOn=false;
 
-function arrange(){
- const radius=Math.min(innerWidth*.36,145);
- options.forEach((el,i)=>{
-  const a=(-90+i*45)*Math.PI/180;
-  el.style.setProperty("--x",Math.cos(a)*radius+"px");
-  el.style.setProperty("--y",Math.sin(a)*radius+"px");
+function setBackground(url){
+ scene.style.backgroundImage=`url("${url}")`;
+}
+setBackground(spaces[0].image);
+
+function buildMenu(){
+ menu.innerHTML="";
+ spaces.forEach((space,i)=>{
+  const angle=(-90+i*45)*Math.PI/180;
+  const x=140+Math.cos(angle)*115;
+  const y=140+Math.sin(angle)*115;
+  const item=document.createElement("div");
+  item.className="option";
+  item.style.left=x+"px";
+  item.style.top=y+"px";
+  item.innerHTML=`<b>${space.icon}</b>${space.name}`;
+  item.addEventListener("pointerdown",e=>{
+   e.preventDefault();
+   openSpace(i);
+  });
+  menu.appendChild(item);
  });
 }
-arrange();
-window.addEventListener("resize",arrange);
+buildMenu();
 
-function summon(){
- core.classList.remove("roaming");
- core.classList.add("centered");
- app.classList.add("open");
- hint.textContent="УДЕРЖИВАЙ ЯДРО И ВЫБЕРИ ФУНКЦИЮ";
+function showMenu(){
+ active=true;
+ menu.classList.add("active");
+ hint.textContent="ВЫБЕРИ ОДНО ИЗ НАПРАВЛЕНИЙ";
 }
-
 function hideMenu(){
- app.classList.remove("open");
- options.forEach(o=>o.classList.remove("active"));
- selected=null;
- core.classList.remove("centered");
- core.classList.add("roaming");
- hint.textContent="НАЖМИ НА ЦЕНТРАЛЬНУЮ ПЛОЩАДКУ";
+ active=false;
+ menu.classList.remove("active");
+ selected=-1;
 }
-
-anchor.addEventListener("click",summon);
-core.addEventListener("click",()=>{
- if(!app.classList.contains("open"))summon();
-});
-
-function findOption(x,y){
- const dx=x-innerWidth/2;
- const dy=y-innerHeight*.49;
- const dist=Math.hypot(dx,dy);
- if(dist<45||dist>Math.min(innerWidth*.49,210))return null;
- let angle=Math.atan2(dy,dx)*180/Math.PI;
- let index=Math.round((angle+90+360)%360/45)%8;
- return options[index];
-}
-
-function highlight(el){
- options.forEach(o=>o.classList.toggle("active",o===el));
- selected=el;
- if(el)hint.textContent="ВЫБРАНО: "+el.dataset.name.toUpperCase()+" · ОТПУСТИ ПАЛЕЦ";
-}
-
 core.addEventListener("pointerdown",e=>{
- if(!app.classList.contains("open"))summon();
  e.preventDefault();
  pointerDown=true;
- startX=e.clientX;startY=e.clientY;
  core.setPointerCapture(e.pointerId);
+ showMenu();
 });
 core.addEventListener("pointermove",e=>{
  if(!pointerDown)return;
- if(Math.hypot(e.clientX-startX,e.clientY-startY)>15){
-  highlight(findOption(e.clientX,e.clientY));
- }
+ const rect=document.getElementById("coreArea").getBoundingClientRect();
+ const cx=rect.left+rect.width/2;
+ const cy=rect.top+rect.height/2;
+ const dx=e.clientX-cx;
+ const dy=e.clientY-cy;
+ if(Math.hypot(dx,dy)<38){selected=-1;return;}
+ let angle=Math.atan2(dy,dx)*180/Math.PI;
+ selected=(Math.round((angle+90+360)%360/45))%8;
+ [...menu.children].forEach((el,i)=>{
+  el.classList.toggle("selected",i===selected);
+ });
 });
 core.addEventListener("pointerup",()=>{
- if(!pointerDown)return;
  pointerDown=false;
- if(selected)openSpace(selected);
+ if(selected>=0)openSpace(selected);
+ else hideMenu();
 });
 core.addEventListener("pointercancel",()=>{
- pointerDown=false;
+ pointerDown=false;hideMenu();
 });
 
-options.forEach(el=>{
- el.addEventListener("click",()=>openSpace(el));
-});
-
-function openSpace(el){
- const name=el.dataset.name;
- const bg=el.dataset.bg;
- scene.className=bg;
- document.getElementById("spaceTitle").textContent=name.toUpperCase();
- document.getElementById("spaceCardTitle").textContent=name+" · WORLD FIND";
- document.getElementById("spaceDescription").textContent=
- "Ты находишься в пространстве «"+name+"». Здесь будет развиваться отдельная область платформы со своим дизайном и инструментами.";
- space.classList.add("show");
- app.classList.add("inspace");
+function openSpace(index){
+ const space=spaces[index];
+ currentSpace=space;
  hideMenu();
- document.getElementById("spaceClose").style.display="block";
+ setBackground(space.image);
+ placeName.textContent=space.name.toUpperCase();
+ title.textContent=space.icon+" "+space.name;
+ description.textContent=space.text;
+ content.innerHTML=`
+ <p>Пространство WORLD FIND</p>
+ <p>Здесь будет работать поиск, реальные данные, предложения и взаимодействие пользователей.</p>
+ <button onclick="backHome()">На главную</button>`;
+ panel.style.display="block";
+ hint.textContent="ПРОСТРАНСТВО ОТКРЫТО";
 }
-
-function goHome(){
- space.classList.remove("show");
- app.classList.remove("inspace");
- scene.className="";
- document.getElementById("spaceClose").style.display="none";
- hideMenu();
+function backHome(){
+ panel.style.display="none";
+ currentSpace=null;
+ setBackground(spaces[0].image);
+ placeName.textContent="WORLD FIND · ЖИВОЕ ЯДРО";
+ hint.textContent="КОСНИСЬ ЯДРА И ВЫБЕРИ НАПРАВЛЕНИЕ";
 }
-window.goHome=goHome;
-
-document.getElementById("moreBtn").onclick=()=>{
- document.getElementById("morePopup").classList.toggle("show");
- document.getElementById("locationPopup").classList.remove("show");
-};
-document.getElementById("locationBtn").onclick=()=>{
- document.getElementById("locationPopup").classList.toggle("show");
- document.getElementById("morePopup").classList.remove("show");
-};
-
-function setLocation(name){
- document.getElementById("locationLabel").textContent="⌖ "+name.toUpperCase();
- document.getElementById("locationPopup").classList.remove("show");
-}
-window.setLocation=setLocation;
-
-function showNotice(name){
- alert(name+" · Демонстрационная функция");
-}
-window.showNotice=showNotice;
-
-document.getElementById("soundBtn").onclick=()=>{
- soundOn=!soundOn;
- document.getElementById("soundBtn").textContent=soundOn?"♫":"♪";
- document.getElementById("soundBtn").style.color=soundOn?"#8be0ff":"white";
-};
-
-document.getElementById("query").addEventListener("keydown",e=>{
- if(e.key==="Enter"&&e.target.value.trim()){
-  const value=e.target.value.trim();
-  openSpace({
-   dataset:{
-    name:"Поиск",
-    bg:"searchspace"
-   }
-  });
-  document.getElementById("spaceDescription").textContent=
-   'Твой запрос: "'+value+'". Реальную поисковую базу подключим на следующем этапе.';
+document.getElementById("back").onclick=backHome;
+document.getElementById("location").onclick=()=>{
+ const city=prompt("Введи город или регион","Ош");
+ if(city){
+  document.getElementById("location").textContent="📍 "+city;
+  if(currentSpace)placeName.textContent=(currentSpace.name+" · "+city).toUpperCase();
  }
+};
+document.getElementById("more").onclick=()=>{
+ title.textContent="Меню WORLD FIND";
+ description.textContent="Дополнительные возможности платформы.";
+ content.innerHTML="<p>Настройки · Помощь · О проекте · Язык</p>";
+ panel.style.display="block";
+};
+document.getElementById("sound").onclick=()=>{
+ const b=document.getElementById("sound");
+ b.textContent=b.textContent==="♫"?"🔇":"♫";
+};
+function search(){
+ const value=document.getElementById("searchInput").value.trim();
+ if(!value)return;
+ title.textContent="Поиск";
+ description.textContent="Запрос: "+value;
+ content.innerHTML="<p>Демонстрационный режим. Подключение реального глобального поиска будет следующим этапом.</p>";
+ panel.style.display="block";
+}
+document.getElementById("searchButton").onclick=search;
+document.getElementById("searchInput").addEventListener("keydown",e=>{
+ if(e.key==="Enter")search();
 });
 </script>
 </body>
