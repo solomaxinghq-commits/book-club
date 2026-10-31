@@ -11,7 +11,8 @@
 
   function createPageView(page) {
     const container = document.createElement("div");
-    container.className = "wf-page-placeholder";
+    container.style.cssText =
+      "padding:24px;color:white;font-family:Arial,sans-serif;";
 
     const title = document.createElement("h2");
     title.textContent = page.title || page.id;
@@ -20,10 +21,7 @@
     section.textContent = "Раздел: " + page.section;
 
     const status = document.createElement("p");
-    status.textContent =
-      page.status === "planned"
-        ? "Статус: запланировано"
-        : "Статус: зарегистрировано";
+    status.textContent = "Статус: запланировано";
 
     const route = document.createElement("small");
     route.textContent = "WORLD FIND · " + page.route;
@@ -33,27 +31,20 @@
     return container;
   }
 
-  // Регистрируем все страницы каталога в системе маршрутов.
   WF.pages.all().forEach(function (page) {
     WF.router.register(page.route, function (outlet) {
       if (!outlet) return;
-
       outlet.replaceChildren(createPageView(page));
     });
   });
 
-  // Единая точка открытия страниц.
   WF.navigation = Object.freeze({
-
     open: function (idOrRoute) {
       const page =
         WF.pages.get(idOrRoute) ||
         WF.pages.getByRoute(idOrRoute);
 
-      if (!page) {
-        console.warn("WORLD FIND: Page not found:", idOrRoute);
-        return false;
-      }
+      if (!page) return false;
 
       WF.router.navigate(page.route);
       return true;
@@ -70,7 +61,6 @@
     getAllPages: function () {
       return WF.pages.all();
     }
-
   });
 
   console.log(
@@ -78,5 +68,4 @@
     WF.pages.count(),
     "pages registered"
   );
-
-})();
+  })();
