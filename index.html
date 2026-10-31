@@ -4,314 +4,209 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="theme-color" content="#050817">
-<title>WORLD FIND 4.1 — Живые пространства</title>
+<meta name="theme-color" content="#050914">
+<title>WORLD FIND 5.0 — Full Visual Universe</title>
 <style>
 *{box-sizing:border-box}
-:root{--accent:#55dfff}
-body{
- margin:0;background:#050817;color:white;
- font-family:Arial,sans-serif;height:100dvh;
- overflow:hidden;user-select:none;
+:root{
+ --cyan:#65eaff;--blue:#258bff;--glass:rgba(8,19,39,.78);
+ --line:rgba(133,220,255,.23);--muted:#9eb7cf;
 }
-#scene{
- position:fixed;inset:0;z-index:0;
- background:#071326 center/cover no-repeat;
- transition:background-image .5s ease;
-}
-#scene:after{
- content:"";position:absolute;inset:0;
- background:linear-gradient(180deg,rgba(3,7,20,.35),rgba(3,7,20,.45) 45%,#030715 100%);
-}
-#shade{
- position:fixed;inset:0;z-index:1;pointer-events:none;
- background:radial-gradient(circle at center,transparent,rgba(0,0,0,.2));
-}
-header{
- position:absolute;z-index:5;top:15px;left:15px;right:15px;
- display:flex;justify-content:space-between;align-items:center;
-}
-.controls{display:flex;gap:9px}
-.control{
- border:1px solid #ffffff35;background:#08172bbd;
- color:white;border-radius:18px;padding:11px 14px;
- backdrop-filter:blur(15px);font-size:17px;
-}
-#placeName{
- position:absolute;z-index:3;top:75px;left:0;right:0;
- text-align:center;font-size:12px;letter-spacing:4px;
- color:#bceeff;text-transform:uppercase;
-}
-#coreArea{
- position:absolute;z-index:4;left:50%;top:49%;
- transform:translate(-50%,-50%);
- width:280px;height:280px;
- display:grid;place-items:center;
-}
-#anchor{
- position:absolute;width:230px;height:230px;border-radius:50%;
- border:1px dashed #69dfff60;
- box-shadow:0 0 50px #32caff22,inset 0 0 50px #32caff12;
-}
-#anchor:before,#anchor:after{
- content:"";position:absolute;border:1px solid #7de7ff25;
- border-radius:50%;inset:22px;
-}
-#anchor:after{inset:45px}
-#core{
- width:105px;height:105px;border-radius:50%;
- position:relative;z-index:3;
- background:radial-gradient(circle at 35% 30%,#fff,#6deaff 15%,#168bda 42%,#071b53 75%);
- box-shadow:0 0 25px #40dfff,0 0 65px #168bff,0 0 120px #168bff55;
- border:1px solid #b7f7ff;
- touch-action:none;
- transition:transform .2s;
-}
-#core:before{
- content:"";position:absolute;inset:-13px;border-radius:50%;
- border:1px solid #75eaff75;animation:pulse 2.5s infinite;
-}
-#core:after{
- content:"";position:absolute;inset:-28px;border-radius:50%;
- border:1px solid #75eaff30;animation:pulse 3.5s infinite;
-}
-@keyframes pulse{50%{transform:scale(1.18);opacity:.2}}
-#hint{
- position:absolute;top:calc(50% + 155px);left:0;right:0;
- text-align:center;color:#b9d9ee;font-size:11px;letter-spacing:2px;
-}
-#menu{
- position:absolute;inset:0;pointer-events:none;
-}
-.option{
- position:absolute;pointer-events:auto;
- transform:translate(-50%,-50%);
- min-width:91px;text-align:center;
- padding:12px 9px;border-radius:18px;
- border:1px solid #9beaff55;
- background:#07172bdc;backdrop-filter:blur(12px);
- box-shadow:0 0 25px #25baff25;
- font-size:12px;color:white;
- opacity:0;scale:.7;transition:.2s;
-}
-#menu.active .option{opacity:1;scale:1}
-.option.selected{
- background:#0d8fbd;color:white;
- border-color:#aaf5ff;
- box-shadow:0 0 30px #35dfff;
-}
-.option b{display:block;font-size:22px;margin-bottom:5px}
-#search{
- position:absolute;z-index:6;bottom:22px;left:15px;right:15px;
- display:flex;gap:8px;
-}
-#search input{
- flex:1;min-width:0;border:1px solid #ffffff35;
- background:#07172bdc;color:white;border-radius:25px;
- padding:16px 18px;font-size:14px;outline:none;
- backdrop-filter:blur(15px);
-}
-#search button{
- border:0;border-radius:50%;width:52px;
- background:#159ed0;color:white;font-size:20px;
-}
-#panel{
- position:absolute;z-index:8;inset:0;
- display:none;background:#06101bea;
- backdrop-filter:blur(18px);padding:85px 22px 90px;
- overflow:auto;
-}
-#panel h2{font-size:27px}
-#panel p{color:#c4d8e9;line-height:1.6}
-#panel button{
- background:#123452;color:white;border:1px solid #5edbff55;
- border-radius:14px;padding:13px 17px;margin:5px;
-}
-#panel .back{position:absolute;top:20px;left:20px}
-#status{
- position:absolute;z-index:3;bottom:90px;left:0;right:0;
- text-align:center;color:#a9d9ed;font-size:10px;letter-spacing:3px;
-}
+body{margin:0;background:#030711;color:#fff;font-family:Arial,sans-serif;min-height:100dvh;overflow:hidden}
+button,input{font:inherit}
+button{color:inherit;cursor:pointer}
+#background{position:fixed;inset:0;background:#07162c center/cover;transition:background-image .5s;z-index:-3}
+#background:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(3,8,20,.38),rgba(3,8,20,.35) 45%,#030711 100%)}
+#ambient{position:fixed;inset:0;z-index:-2;pointer-events:none;background:radial-gradient(ellipse at 50% 40%,rgba(27,151,255,.13),transparent 55%)}
+header{height:62px;position:absolute;top:0;left:0;right:0;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;z-index:20}
+.brand{font-size:12px;letter-spacing:3px;color:#c7f6ff}
+.actions{display:flex;gap:7px}
+.glassbtn{background:var(--glass);border:1px solid var(--line);border-radius:15px;padding:10px 13px;backdrop-filter:blur(15px)}
+#main{position:absolute;inset:62px 0 82px;overflow:auto;scrollbar-width:none}
+#home{min-height:100%;display:flex;flex-direction:column;align-items:center;padding:25px 15px 30px}
+.eyebrow{font-size:10px;letter-spacing:4px;color:var(--cyan);text-align:center}
+h1{font-size:clamp(27px,7vw,43px);letter-spacing:2px;text-align:center;margin:13px 0 5px}
+.subtitle{text-align:center;color:#a9c4dc;font-size:12px;letter-spacing:2px}
+.planet{width:min(66vw,260px);aspect-ratio:1;border-radius:50%;margin:32px auto 22px;position:relative;background:radial-gradient(circle at 35% 28%,#b9f8ff,#3b9dd7 12%,#0d397c 39%,#07152d 68%,#020817 76%);box-shadow:inset -24px -18px 45px #000b,0 0 35px #178cff55,0 0 90px #168bff35;overflow:hidden}
+.planet:before{content:"";position:absolute;inset:-20%;border:1px solid #65dfff55;border-radius:50%;transform:rotate(-25deg) scaleY(.35)}
+.planet:after{content:"";position:absolute;inset:9%;border:1px solid #7eeaff55;border-radius:50%;transform:rotate(25deg) scaleY(.45)}
+.planetGlow{position:absolute;inset:0;background:radial-gradient(circle at 28% 25%,#fff8,transparent 30%)}
+.coreCaption{text-align:center;font-size:10px;color:#a8cbe5;letter-spacing:3px;margin-bottom:18px}
+.search{width:min(100%,540px);display:flex;gap:8px}
+.search input{flex:1;min-width:0;background:#08182ddd;border:1px solid var(--line);border-radius:28px;padding:16px;color:white;outline:none}
+.search button{width:54px;border:0;border-radius:50%;background:linear-gradient(135deg,#4bdfff,#1474dc);font-size:22px}
+.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;width:min(100%,540px);margin-top:20px}
+.quick button{background:#0b1a30c9;border:1px solid var(--line);border-radius:17px;padding:13px 4px;font-size:10px;color:#d9f5ff}
+.quick span{display:block;font-size:22px;margin-bottom:7px}
+.sectionTitle{width:min(100%,700px);margin:28px auto 13px;font-size:13px;letter-spacing:2px;color:#b9eaff}
+.grid{width:min(100%,700px);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.tile{min-height:125px;border-radius:19px;border:1px solid #a5dfff33;position:relative;overflow:hidden;text-align:left;padding:14px;background:#10223b;isolation:isolate}
+.tile:before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(135deg,var(--tile),#071323 90%);opacity:.9}
+.tile:after{content:attr(data-icon);position:absolute;right:9px;bottom:-10px;font-size:57px;opacity:.2}
+.tile strong{font-size:14px;display:block;margin-bottom:8px}
+.tile small{color:#c2d9ed;font-size:10px;line-height:1.4}
+#workspace{display:none;padding:18px 15px 35px;max-width:850px;margin:auto}
+.cover{height:190px;border:1px solid var(--line);border-radius:24px;position:relative;overflow:hidden;background:linear-gradient(120deg,#102b4c,#061323)}
+.cover:after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 75% 30%,#57dfff55,transparent 40%),linear-gradient(0deg,#030915aa,transparent)}
+.coverText{position:absolute;z-index:1;left:20px;bottom:18px}
+.coverText h2{font-size:27px;margin:0 0 7px}
+.coverText p{margin:0;color:#c5dcec;font-size:11px}
+.workspaceHead{display:flex;align-items:center;justify-content:space-between;margin:20px 0}
+.workspaceHead h3{margin:0;font-size:19px}
+.pill{font-size:9px;color:#9cecff;border:1px solid #5adfff55;padding:7px 10px;border-radius:20px}
+.subgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.subtile{background:#0b192cdd;border:1px solid var(--line);border-radius:17px;padding:15px;text-align:left;min-height:90px}
+.subtile b{display:block;margin-bottom:8px;font-size:13px}
+.subtile small{color:var(--muted);font-size:10px}
+.block{margin-top:20px;padding:17px;border-radius:19px;background:#0a1729db;border:1px solid var(--line)}
+.block h3{margin:0 0 12px;font-size:14px}
+.block p{font-size:12px;color:#adc5dc;line-height:1.6}
+.placeholder{padding:15px;border:1px dashed #5b9dbb66;border-radius:14px;color:#a8cce2;font-size:11px;line-height:1.5}
+#bottom{position:absolute;bottom:0;left:0;right:0;height:72px;z-index:20;display:flex;align-items:center;justify-content:space-around;background:#050d1deF;border-top:1px solid var(--line);backdrop-filter:blur(18px)}
+.nav{background:none;border:0;color:#91abc4;font-size:10px;padding:9px 5px}
+.nav span{display:block;font-size:20px;margin-bottom:4px}
+.nav.active{color:var(--cyan)}
+#notice{position:fixed;z-index:40;left:50%;bottom:88px;transform:translateX(-50%);background:#0c2841;border:1px solid #55dfff66;border-radius:15px;padding:12px 17px;font-size:11px;display:none;max-width:90%;text-align:center}
+@media(min-width:650px){.grid,.subgrid{grid-template-columns:repeat(3,minmax(0,1fr))}.tile{min-height:150px}}
 </style>
 </head>
 <body>
-<div id="scene"></div>
-<div id="shade"></div>
-
+<div id="background"></div><div id="ambient"></div>
 <header>
- <div class="controls">
-  <button class="control" id="sound">♫</button>
-  <button class="control" id="more">⋯</button>
+ <div class="brand">WORLD FIND <span style="color:#62eaff">5.0</span></div>
+ <div class="actions">
+  <button class="glassbtn" id="sound">♫</button>
+  <button class="glassbtn" id="menuBtn">⋯</button>
+  <button class="glassbtn" id="cityBtn">📍 Ош</button>
  </div>
- <button class="control" id="location">📍 Ош</button>
 </header>
 
-<div id="placeName">WORLD FIND · ЖИВОЕ ЯДРО</div>
+<main id="main">
+<section id="home">
+ <div class="eyebrow">GLOBAL DISCOVERY SYSTEM</div>
+ <h1>ONE PLANET</h1>
+ <div class="subtitle">MANY POSSIBILITIES</div>
+ <div class="planet"><div class="planetGlow"></div></div>
+ <div class="coreCaption">ЖИВОЕ ЯДРО · СИСТЕМА АКТИВНА</div>
+ <div class="search">
+  <input id="globalSearch" placeholder="Что ты ищешь в этом мире?">
+  <button id="searchBtn">⌕</button>
+ </div>
+ <div class="quick">
+  <button onclick="openSpace('map')"><span>🌍</span>Карта</button>
+  <button onclick="openSpace('market')"><span>🛍️</span>Товары</button>
+  <button onclick="openSpace('work')"><span>💼</span>Работа</button>
+  <button onclick="openSpace('services')"><span>🛠️</span>Услуги</button>
+ </div>
+ <div class="sectionTitle">ИССЛЕДУЙ ВСЕЛЕННУЮ WORLD FIND</div>
+ <div class="grid" id="allTiles"></div>
+ <div class="sectionTitle">ГЛОБАЛЬНЫЕ ПРОСТРАНСТВА</div>
+ <div class="grid" id="globalTiles"></div>
+</section>
 
-<div id="coreArea">
- <div id="anchor"></div>
- <div id="core"></div>
- <div id="menu"></div>
-</div>
+<section id="workspace">
+ <button class="glassbtn" onclick="goHome()">← Главная</button>
+ <div class="cover" id="cover">
+  <div class="coverText"><h2 id="spaceTitle"></h2><p id="spaceSubtitle"></p></div>
+ </div>
+ <div class="workspaceHead">
+  <h3 id="insideTitle">Исследуй раздел</h3>
+  <span class="pill">ВИЗУАЛЬНАЯ СРЕДА</span>
+ </div>
+ <div class="subgrid" id="subTiles"></div>
+ <div class="block">
+  <h3>О пространстве</h3>
+  <p id="spaceDescription"></p>
+ </div>
+ <div class="block">
+  <h3>Содержимое пространства</h3>
+  <div class="placeholder" id="spacePlaceholder">
+   Визуальная структура готова. Подключение реальных данных и действий будет добавлено на следующих этапах.
+  </div>
+ </div>
+ <div class="block">
+  <h3>Связанные возможности</h3>
+  <div class="subgrid" id="relatedTiles"></div>
+ </div>
+</section>
+</main>
 
-<div id="hint">КОСНИСЬ ЯДРА И ВЫБЕРИ НАПРАВЛЕНИЕ</div>
-<div id="status">ONE PLANET · MANY POSSIBILITIES</div>
-
-<div id="search">
- <input id="searchInput" placeholder="Найти что угодно в мире...">
- <button id="searchButton">⌕</button>
-</div>
-
-<div id="panel">
- <button class="back" id="back">← Назад</button>
- <h2 id="panelTitle"></h2>
- <p id="panelText"></p>
- <div id="panelContent"></div>
-</div>
+<nav id="bottom">
+ <button class="nav active" onclick="goHome()"><span>⌂</span>Главная</button>
+ <button class="nav" onclick="openSpace('map')"><span>🌐</span>Мир</button>
+ <button class="nav" onclick="openSpace('market')"><span>▦</span>Каталог</button>
+ <button class="nav" onclick="openSpace('profile')"><span>◉</span>Профиль</button>
+</nav>
+<div id="notice"></div>
 
 <script>
 const spaces=[
- {id:"map",name:"Карта мира",icon:"🌍",image:"https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1600&q=85",text:"Исследуй города, страны, места и маршруты."},
- {id:"market",name:"Товары и магазины",icon:"🛍️",image:"https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1600&q=85",text:"Находи товары, магазины, цены и доступность."},
- {id:"services",name:"Услуги",icon:"🛠️",image:"https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=1600&q=85",text:"Специалисты, компании и услуги рядом."},
- {id:"work",name:"Работа и задания",icon:"💼",image:"https://images.unsplash.com/photo-1497366216548-37526070297c?w=1600&q=85",text:"Работа, проекты, заказы и возможности."},
- {id:"learn",name:"Обучение",icon:"🎓",image:"https://images.unsplash.com/photo-1509062522246-3755977927d7?w=1600&q=85",text:"Обучение, знания, курсы и развитие."},
- {id:"community",name:"Сообщества",icon:"👥",image:"https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1600&q=85",text:"Люди, города, общение и совместные инициативы."},
- {id:"delivery",name:"Доставка",icon:"🚚",image:"https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1600&q=85",text:"Заказы, доставка и отслеживание."},
- {id:"profile",name:"Профиль",icon:"👤",image:"https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1600&q=85",text:"Твой профиль и личные настройки."}
+ {id:"map",icon:"🌍",name:"Карта мира",desc:"Исследование планеты: страны, регионы, города, районы, улицы и конкретные места.",sub:["Континенты","Страны","Регионы","Города","Районы","Улицы","Места","Маршруты","Избранное"],color:"#126a9b",related:["market","delivery","community"]},
+ {id:"market",icon:"🛍️",name:"Торговая вселенная",desc:"Единое пространство товаров, магазинов, торговых точек, поставщиков и покупателей.",sub:["Все товары","Магазины","Торговые центры","Продукты","Одежда","Электроника","Дом и быт","Поставщики","Заказы","Корзина","Избранное"],color:"#8b4b24",related:["delivery","business","profile"]},
+ {id:"work",icon:"💼",name:"Работа и возможности",desc:"Работа, вакансии, разовые задания, удалённые проекты, заказчики и исполнители.",sub:["Вакансии","Удалённая работа","Разовые задания","Проекты","Фриланс","Заказчики","Исполнители","Мои отклики","Мои заказы"],color:"#315b8e",related:["services","business","profile"]},
+ {id:"services",icon:"🛠️",name:"Услуги и специалисты",desc:"Поиск специалистов, сервисных компаний, мастеров, организаций и доступных услуг.",sub:["Все услуги","Ремонт","Строительство","Транспорт","Красота","IT и технологии","Домашние услуги","Специалисты","Компании","Запись"],color:"#346b64",related:["work","map","business"]},
+ {id:"delivery",icon:"🚚",name:"Доставка и логистика",desc:"Заказы, доставка от магазинов, пункты получения, курьеры, маршруты и статусы.",sub:["Создать заказ","Мои заказы","Курьеры","Пункты получения","Маршруты","Статус доставки","Партнёры","История"],color:"#315d85",related:["market","map","profile"]},
+ {id:"learn",icon:"🎓",name:"Образование и знания",desc:"Обучение, учебные пространства, школы, преподаватели, курсы и развитие навыков.",sub:["Курсы","Школы","Университеты","Преподаватели","Языки","Программирование","Библиотека","Мои занятия"],color:"#67508b",related:["community","work","profile"]},
+ {id:"community",icon:"👥",name:"Сообщества и люди",desc:"Городские сообщества, инициативы, обсуждения, события и совместные проекты.",sub:["Мой город","Сообщества","Обсуждения","Инициативы","События","Группы","Участники","Объявления"],color:"#74507d",related:["map","learn","business"]},
+ {id:"business",icon:"🏢",name:"Бизнес и партнёры",desc:"Компании, предприниматели, организации, поставщики, партнёрские программы.",sub:["Компании","Предприниматели","Поставщики","Партнёры","Создать компанию","Аналитика","Мои предложения","Сотрудничество"],color:"#765d35",related:["market","work","services"]},
+ {id:"profile",icon:"👤",name:"Личный кабинет",desc:"Персональное пространство пользователя, его профиль, активность и настройки.",sub:["Мой профиль","Мои публикации","Мои заказы","Мои отклики","Избранное","История","Уведомления","Настройки","Безопасность"],color:"#345b75",related:["market","work","delivery"]},
+ {id:"ai",icon:"✧",name:"AI-ядро",desc:"Единый интеллектуальный помощник для поиска, навигации и взаимодействия с платформой.",sub:["Умный поиск","Помощь в выборе","Подбор предложений","Навигация","Перевод","Помощь пользователю"],color:"#167d99",related:["map","market","learn"]},
+ {id:"communication",icon:"💬",name:"Коммуникации",desc:"Система сообщений, уведомлений, взаимодействия пользователей и организаций.",sub:["Сообщения","Диалоги","Уведомления","Запросы","Поддержка","Объявления"],color:"#315d8b",related:["community","business","profile"]},
+ {id:"settings",icon:"⚙️",name:"Настройки и система",desc:"Языки, внешний вид, приватность, безопасность, правила и системные параметры.",sub:["Язык","Внешний вид","Приватность","Безопасность","Правила","Помощь","О платформе"],color:"#43556b",related:["profile","ai","communication"]}
 ];
 
-const scene=document.getElementById("scene");
-const core=document.getElementById("core");
-const menu=document.getElementById("menu");
-const panel=document.getElementById("panel");
-const title=document.getElementById("panelTitle");
-const description=document.getElementById("panelText");
-const content=document.getElementById("panelContent");
-const placeName=document.getElementById("placeName");
-const hint=document.getElementById("hint");
+const globalSpaces=[
+ {name:"Мир и география",desc:"От локального места до глобальной карты."},
+ {name:"Экономика платформы",desc:"Платежи, комиссии, партнёрства и расчёты."},
+ {name:"Безопасность",desc:"Проверка, защита аккаунтов, жалобы и модерация."},
+ {name:"Управление",desc:"Системные роли, контроль качества и развитие."}
+];
 
-let active=false;
-let selected=-1;
-let currentSpace=null;
-let pointerDown=false;
+function tile(space){
+ return `<button class="tile" data-icon="${space.icon}" style="--tile:${space.color||'#254b70'}" onclick="openSpace('${space.id}')"><strong>${space.icon} ${space.name}</strong><small>${space.desc}</small></button>`;
+}
+document.getElementById("allTiles").innerHTML=spaces.map(tile).join("");
+document.getElementById("globalTiles").innerHTML=globalSpaces.map(x=>`<button class="tile" style="--tile:#214b70" onclick="showNotice('${x.name}: раздел будет развиваться поэтапно')"><strong>${x.name}</strong><small>${x.desc}</small></button>`).join("");
 
-function setBackground(url){
- scene.style.backgroundImage=`url("${url}")`;
+function openSpace(id){
+ const s=spaces.find(x=>x.id===id);
+ if(!s)return;
+ document.getElementById("home").style.display="none";
+ document.getElementById("workspace").style.display="block";
+ document.getElementById("spaceTitle").textContent=s.icon+" "+s.name;
+ document.getElementById("spaceSubtitle").textContent="WORLD FIND · SPACE "+s.id.toUpperCase();
+ document.getElementById("spaceDescription").textContent=s.desc;
+ document.getElementById("insideTitle").textContent="Исследуй: "+s.name;
+ document.getElementById("cover").style.background=`linear-gradient(120deg,${s.color},#061323 90%)`;
+ document.getElementById("subTiles").innerHTML=s.sub.map((x,i)=>`<button class="subtile" onclick="showNotice('${x}: визуальная страница подготовлена, функциональность в разработке')"><b>${["◇","◈","✧","▣"][i%4]} ${x}</b><small>Открыть пространство</small></button>`).join("");
+ document.getElementById("relatedTiles").innerHTML=s.related.map(id=>{let r=spaces.find(x=>x.id===id);return `<button class="subtile" onclick="openSpace('${r.id}')"><b>${r.icon} ${r.name}</b><small>Перейти</small></button>`}).join("");
+ document.getElementById("spacePlaceholder").textContent="Структура раздела создана. Реальные данные, поиск, публикации, заказы и другие действия будут подключаться поэтапно.";
+ document.getElementById("main").scrollTop=0;
+ document.querySelectorAll(".nav").forEach(x=>x.classList.remove("active"));
 }
-setBackground(spaces[0].image);
-
-function buildMenu(){
- menu.innerHTML="";
- spaces.forEach((space,i)=>{
-  const angle=(-90+i*45)*Math.PI/180;
-  const x=140+Math.cos(angle)*115;
-  const y=140+Math.sin(angle)*115;
-  const item=document.createElement("div");
-  item.className="option";
-  item.style.left=x+"px";
-  item.style.top=y+"px";
-  item.innerHTML=`<b>${space.icon}</b>${space.name}`;
-  item.addEventListener("pointerdown",e=>{
-   e.preventDefault();
-   openSpace(i);
-  });
-  menu.appendChild(item);
- });
+function goHome(){
+ document.getElementById("workspace").style.display="none";
+ document.getElementById("home").style.display="flex";
+ document.getElementById("main").scrollTop=0;
 }
-buildMenu();
-
-function showMenu(){
- active=true;
- menu.classList.add("active");
- hint.textContent="ВЫБЕРИ ОДНО ИЗ НАПРАВЛЕНИЙ";
+function showNotice(t){
+ const n=document.getElementById("notice");
+ n.textContent=t+" · Скоро";
+ n.style.display="block";
+ clearTimeout(window.noticeTimer);
+ window.noticeTimer=setTimeout(()=>n.style.display="none",2600);
 }
-function hideMenu(){
- active=false;
- menu.classList.remove("active");
- selected=-1;
-}
-core.addEventListener("pointerdown",e=>{
- e.preventDefault();
- pointerDown=true;
- core.setPointerCapture(e.pointerId);
- showMenu();
-});
-core.addEventListener("pointermove",e=>{
- if(!pointerDown)return;
- const rect=document.getElementById("coreArea").getBoundingClientRect();
- const cx=rect.left+rect.width/2;
- const cy=rect.top+rect.height/2;
- const dx=e.clientX-cx;
- const dy=e.clientY-cy;
- if(Math.hypot(dx,dy)<38){selected=-1;return;}
- let angle=Math.atan2(dy,dx)*180/Math.PI;
- selected=(Math.round((angle+90+360)%360/45))%8;
- [...menu.children].forEach((el,i)=>{
-  el.classList.toggle("selected",i===selected);
- });
-});
-core.addEventListener("pointerup",()=>{
- pointerDown=false;
- if(selected>=0)openSpace(selected);
- else hideMenu();
-});
-core.addEventListener("pointercancel",()=>{
- pointerDown=false;hideMenu();
-});
-
-function openSpace(index){
- const space=spaces[index];
- currentSpace=space;
- hideMenu();
- setBackground(space.image);
- placeName.textContent=space.name.toUpperCase();
- title.textContent=space.icon+" "+space.name;
- description.textContent=space.text;
- content.innerHTML=`
- <p>Пространство WORLD FIND</p>
- <p>Здесь будет работать поиск, реальные данные, предложения и взаимодействие пользователей.</p>
- <button onclick="backHome()">На главную</button>`;
- panel.style.display="block";
- hint.textContent="ПРОСТРАНСТВО ОТКРЫТО";
-}
-function backHome(){
- panel.style.display="none";
- currentSpace=null;
- setBackground(spaces[0].image);
- placeName.textContent="WORLD FIND · ЖИВОЕ ЯДРО";
- hint.textContent="КОСНИСЬ ЯДРА И ВЫБЕРИ НАПРАВЛЕНИЕ";
-}
-document.getElementById("back").onclick=backHome;
-document.getElementById("location").onclick=()=>{
- const city=prompt("Введи город или регион","Ош");
- if(city){
-  document.getElementById("location").textContent="📍 "+city;
-  if(currentSpace)placeName.textContent=(currentSpace.name+" · "+city).toUpperCase();
- }
+document.getElementById("searchBtn").onclick=()=>{
+ const q=document.getElementById("globalSearch").value.trim();
+ if(q)showNotice("Поиск: "+q+" · Глобальный поиск пока не подключён");
 };
-document.getElementById("more").onclick=()=>{
- title.textContent="Меню WORLD FIND";
- description.textContent="Дополнительные возможности платформы.";
- content.innerHTML="<p>Настройки · Помощь · О проекте · Язык</p>";
- panel.style.display="block";
+document.getElementById("globalSearch").addEventListener("keydown",e=>{if(e.key==="Enter")document.getElementById("searchBtn").click()});
+document.getElementById("cityBtn").onclick=()=>{
+ const c=prompt("Выбери город или введи свой","Ош");
+ if(c)document.getElementById("cityBtn").textContent="📍 "+c;
 };
-document.getElementById("sound").onclick=()=>{
- const b=document.getElementById("sound");
- b.textContent=b.textContent==="♫"?"🔇":"♫";
-};
-function search(){
- const value=document.getElementById("searchInput").value.trim();
- if(!value)return;
- title.textContent="Поиск";
- description.textContent="Запрос: "+value;
- content.innerHTML="<p>Демонстрационный режим. Подключение реального глобального поиска будет следующим этапом.</p>";
- panel.style.display="block";
-}
-document.getElementById("searchButton").onclick=search;
-document.getElementById("searchInput").addEventListener("keydown",e=>{
- if(e.key==="Enter")search();
-});
+document.getElementById("sound").onclick=()=>showNotice("Звуковые эффекты появятся в следующей сборке");
+document.getElementById("menuBtn").onclick=()=>openSpace("settings");
 </script>
 </body>
 </html>
